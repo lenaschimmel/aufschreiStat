@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="create_run_jar" name="Create Runnable Jar for Project aufschreiStat">
-    <target name="create-dirs" description="Creatz da shit.">
+	<path id="compile.classpath">
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="create-dirs">
 		<mkdir dir="bin" />
 	</target>
 
 
-	<target name="compile" depends="create-dirs" description="Compiles da shit.">
+	<target name="compile" depends="create-dirs">
 		<javac srcdir="src" destdir="bin" includeAntRuntime="false">
-
+			<classpath refid="compile.classpath" />
 		</javac>
 	</target>
 
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.7 is required                                        -->
 	<target name="create_run_jar" depends="compile">
-        <jar destfile="bin/aufschreiStat.jar" filesetmanifest="mergewithoutmain">
-            <manifest>
-                <attribute name="Main-Class" value="de.lenaschimmel.aufschreistat.Main"/>
-                <attribute name="Class-Path" value="."/>
-            </manifest>
-            <fileset dir="bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="lib/twitter4j-core-3.0.3.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="lib/twitter4j-stream-3.0.3.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="lib/mysql-connector-java-5.1.17-bin.jar"/>
-        </jar>
-    </target>
+		<jar destfile="bin/aufschreiStat.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="de.lenaschimmel.aufschreistat.Main" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="bin" />
+			<zipfileset excludes="META-INF/*.SF" src="lib/twitter4j-core-3.0.3.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="lib/twitter4j-stream-3.0.3.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="lib/mysql-connector-java-5.1.17-bin.jar" />
+		</jar>
+	</target>
 </project>
