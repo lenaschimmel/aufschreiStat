@@ -60,12 +60,10 @@ public class Main {
 		}
 	}
 
-	private static PreparedStatement insertTweetStmt;
-	private static PreparedStatement insertUserStmt;
-
 	private static void insertTweet(long id, long user_id, String text, long timestamp, Long reply_status_id) throws SQLException
 	{
-		insertTweetStmt.setLong(1, id);
+		PreparedStatement insertTweetStmt = SqlHelper.getInsertTweetStmt();
+		insertTweetStmt .setLong(1, id);
 		insertTweetStmt.setLong(2, user_id);
 		insertTweetStmt.setString(3, text);
 		insertTweetStmt.setTimestamp(4,new Timestamp(timestamp));
@@ -78,6 +76,7 @@ public class Main {
 	
 	private static void insertUser(long id, String screen_name, String name, String url, String profile_image_url) throws SQLException
 	{
+		PreparedStatement insertUserStmt = SqlHelper.getInsertUserStmt();
 		insertUserStmt.setLong(1, id);
 		insertUserStmt.setString(2, screen_name);
 		insertUserStmt.setString(3, name);
@@ -90,8 +89,11 @@ public class Main {
 		SqlHelper.initDbParams();
 		
 		Connection con = SqlHelper.getConnection();
-		insertTweetStmt = con.prepareStatement("INSERT INTO tweets SET id = ?, user_id = ?, text = ?, timestamp = ?, reply_status_id = ?;");
-		insertUserStmt = con.prepareStatement("INSERT INTO users SET id = ?, screen_name = ?, name = ?, url = ?, profile_image_url = ?;");
+		if(con == null)
+		{
+			System.err.println("Connection error on startup. Exiting.");
+			System.exit(1);
+		}
 		
 	    StatusListener listener = new PrintingStatusListener();
 	    TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
