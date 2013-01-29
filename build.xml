@@ -3,15 +3,15 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="/home/lena/workspace/aufschreiStat/bin/aufschreiStat.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="bin/aufschreiStat.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="de.lenaschimmel.aufschreistat.Main"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="/home/lena/workspace/aufschreiStat/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/lena/workspace/aufschreiStat/lib/twitter4j-core-3.0.3.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/lena/workspace/aufschreiStat/lib/twitter4j-stream-3.0.3.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/lena/workspace/aufschreiStat/lib/mysql-connector-java-5.1.17-bin.jar"/>
+            <fileset dir="bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/twitter4j-core-3.0.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/twitter4j-stream-3.0.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/mysql-connector-java-5.1.17-bin.jar"/>
         </jar>
     </target>
 </project>
