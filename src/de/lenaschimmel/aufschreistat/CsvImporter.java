@@ -91,6 +91,16 @@ public class CsvImporter {
 
 
 	private static void parseNodeFile(BufferedReader br) throws IOException {
+		
+		
+		
+		
+		
+		// Attention - this method is not yet ready.
+		
+		
+		
+		
 		SimpleDateFormat parserSDF = new SimpleDateFormat("dd.mm.yyyy HH:mm");
 
 		br.reset();

@@ -24,24 +24,7 @@ public class Main {
 
 	private static final class PrintingStatusListener implements StatusListener {
 		public void onStatus(Status status) {
-			User user = status.getUser();
-			System.out.println(user.getName() + " : " + status.getText());
-			try {
-				insertTweet(status.getId(), user.getId(), status.getText(),
-						status.getCreatedAt().getTime(),
-						status.getInReplyToStatusId());
-				try {
-					insertUser(user.getId(), user.getScreenName(),
-							user.getName(), user.getURL(),
-							user.getMiniProfileImageURL());
-				} catch (MySQLIntegrityConstraintViolationException e) {
-					// e.printStackTrace();
-					// ignore, this is just a duplicate user entry, that's
-					// normal
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			saveStatus(status);
 		}
 
 		public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
@@ -128,6 +111,27 @@ public class Main {
 
 		twitterStream.addListener(listener);
 		twitterStream.filter(query);
+	}
+
+	public static void saveStatus(Status status) {
+		User user = status.getUser();
+		System.out.println(user.getName() + " : " + status.getText());
+		try {
+			insertTweet(status.getId(), user.getId(), status.getText(),
+					status.getCreatedAt().getTime(),
+					status.getInReplyToStatusId());
+			try {
+				insertUser(user.getId(), user.getScreenName(),
+						user.getName(), user.getURL(),
+						user.getMiniProfileImageURL());
+			} catch (MySQLIntegrityConstraintViolationException e) {
+				// e.printStackTrace();
+				// ignore, this is just a duplicate user entry, that's
+				// normal
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
