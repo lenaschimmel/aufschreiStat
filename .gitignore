@@ -1,4 +1,5 @@
 bin
 *.properties
 aufschreiStat.jar
+nohup.out
 
