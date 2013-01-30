@@ -4,7 +4,7 @@
 
 Hier entsteht ein Programm zum Sammeln von #aufschrei-Tweets, zum manuellen Versehen diese Tweets mit speziellen Tags, zur automatischen statistischen Auswertung und zum belästigungsfreien Lesen der Tweets.
 
-Nähere Infos zu diesem Software-Projekt sind [in diesem Blogpost](http://lenaschimmel.de/wordpress/index.php/2013/aufschreistat-statistische-analyse-des-aufschreis/) auf [lenaschimmel.de](http://lenaschimmel.de) zu finden.
+Nähere Infos zu diesem Software-Projekt sind [in diesem Blogpost](http://lenaschimmel.de/wordpress/index.php/2013/aufschreistat-statistische-analyse-des-aufschreis/) auf [lenaschimmel.de](http://lenaschimmel.de) zu finden. Diskussion und aktuelle Statusmeldungen werden über [die Mailingliste](https://groups.google.com/forum/#!forum/aufschreistat) kommuniziert.
 
 ## Aktueller Stand
 
@@ -12,7 +12,7 @@ Diese Software dürfte im aktuellen Status für niemanden interessant sein, sie 
 
 ## Kontakt
 
-[@LenaSchimmel](https://twitter.com/LenaSchimmel) ist auf Twitter unterwegs und twittert dort neuigkeiten zu diesem Projekt unter dem Hashtag [#aufschreistat](https://twitter.com/search?q=%23aufschreistat&src=hash). Per Mail ist sie unter [DieLenaMaria@googlemail.com](mailto:DieLenaMaria@googlemail.com) erreichbar.
+[@LenaSchimmel](https://twitter.com/LenaSchimmel) ist auf Twitter unterwegs und twittert dort Neuigkeiten zu diesem Projekt unter dem Hashtag [#aufschreistat](https://twitter.com/search?q=%23aufschreistat&src=hash). Per Mail ist sie unter [DieLenaMaria@googlemail.com](mailto:DieLenaMaria@googlemail.com) erreichbar.
 
 
 

@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 public class SqlHelper {
@@ -18,6 +19,7 @@ public class SqlHelper {
 	private static String password;
 	private static PreparedStatement insertTweetStmt;
 	private static PreparedStatement insertUserStmt;
+	private static PreparedStatement getUserIdStmt;
 
 	static void initDbParams() throws IOException {
 		Properties properties = new Properties();
@@ -44,7 +46,8 @@ public class SqlHelper {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(connectString, username, password);
 				insertTweetStmt = con.prepareStatement("INSERT INTO tweets SET id = ?, user_id = ?, text = ?, timestamp = ?, reply_status_id = ?;");
-				insertUserStmt = con.prepareStatement("INSERT INTO users SET id = ?, screen_name = ?, name = ?, url = ?, profile_image_url = ?;");
+				insertUserStmt = con.prepareStatement("INSERT INTO users SET id = ?, screen_name = ?, name = ?, url = ?, profile_image_url = ?;", Statement.RETURN_GENERATED_KEYS);
+				getUserIdStmt =  con.prepareStatement("SELECT id FROM users WHERE screen_name = ?;");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -53,18 +56,20 @@ public class SqlHelper {
 	}
 
 	public static PreparedStatement getInsertTweetStmt() {
+		if(insertTweetStmt == null)
+			getConnection();
 		return insertTweetStmt;
 	}
 
-	public static void setInsertTweetStmt(PreparedStatement insertTweetStmt) {
-		SqlHelper.insertTweetStmt = insertTweetStmt;
-	}
-
 	public static PreparedStatement getInsertUserStmt() {
+		if(insertUserStmt == null)
+			getConnection();
 		return insertUserStmt;
 	}
 
-	public static void setInsertUserStmt(PreparedStatement insertUserStmt) {
-		SqlHelper.insertUserStmt = insertUserStmt;
+	public static PreparedStatement getGetUserIdStmt() {
+		if(getUserIdStmt == null)
+			getConnection();
+		return getUserIdStmt;
 	}
 }
