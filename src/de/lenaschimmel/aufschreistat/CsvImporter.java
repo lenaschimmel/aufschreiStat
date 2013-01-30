@@ -53,7 +53,7 @@ public class CsvImporter {
 			try {
 				long id = Long.parseLong(reader.get(1));
 				String url = reader.get(5);
-				String screenName = url.substring(url.lastIndexOf('/'));
+				String screenName = url.substring(url.lastIndexOf('/')+1);
 
 				long user_id = getUserByProfileUrl(screenName);
 				if (user_id == 0) {
@@ -91,7 +91,51 @@ public class CsvImporter {
 
 
 	private static void parseNodeFile(BufferedReader br) throws IOException {
-		String firstLine = br.readLine();
+		SimpleDateFormat parserSDF = new SimpleDateFormat("dd.mm.yyyy HH:mm");
+
+		br.reset();
+		CsvReader reader = new CsvReader(br);
+		reader.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
+		// ignore first two lines
+		reader.readRecord();
+		reader.readRecord();
+		boolean hasLine = reader.readRecord();
+	
+		int lineCount = 0;
+		int tweetCount = 0;
+		int userCount = 0;
+
+		while (hasLine) {
+			lineCount++;
+		
+
+			try {
+				String tweetUrl = reader.get(21);
+				long id = Long.parseLong(tweetUrl.substring(tweetUrl.lastIndexOf('/')+1));
+				String url = null;
+				String screenName = reader.get(0);
+
+				long user_id = getUserByProfileUrl(screenName);
+				if (user_id == 0) {
+					user_id = Main.insertUser(0, screenName, reader.get(3),
+							null,reader.get(4));
+					userCount++;
+					System.out.println("Inserted user " + userCount);
+				}
+				String text = reader.get(6);
+				long timestamp = parserSDF.parse(reader.get(2)).getTime();
+				Long reply_status_id = null;
+				Main.insertTweet(id, user_id, text, timestamp, reply_status_id);
+				tweetCount++;
+				System.out.println("Inserted tweet " + tweetCount + ": " + text);
+			} catch (Exception e) {
+				System.err.println("Faulty line.");
+				e.printStackTrace();
+			}
+
+			hasLine = reader.readRecord();
+		}
+		System.out.println("Processed " + lineCount + " lines");
 	}
 
 }
