@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Properties;
 
 import twitter4j.Status;
@@ -146,6 +147,21 @@ public class SqlHelper {
 		} catch (MySQLIntegrityConstraintViolationException e) {
 			// ignore, this is just a duplicate tweet entry, that's rather normal
 		}
+	}
+
+	public static void insertDummyTweet(long id, String message) throws SQLException {
+		System.out.println("INSERT DUMMY TWEET");
+
+		PreparedStatement insertTweetStmt = SqlHelper.getInsertTweetStmt();
+		insertTweetStmt.setLong(1, id);
+		insertTweetStmt.setFloat(2, 0);
+		insertTweetStmt.setFloat(3, 0);
+		insertTweetStmt.setString(4, "[ERROR TWEET]: " + message.substring(message.indexOf("message - ") + 10));
+		insertTweetStmt.setInt(5, 0);
+		insertTweetStmt.setTimestamp(6, new Timestamp(new Date().getTime()));
+		insertTweetStmt.setLong(7, -1);
+		insertTweetStmt.setLong(8, -1);
+		insertTweetStmt.executeUpdate();
 	}
 
 }
