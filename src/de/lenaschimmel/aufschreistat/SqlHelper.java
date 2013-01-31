@@ -24,6 +24,7 @@ public class SqlHelper {
 	private static PreparedStatement insertTweetStmt;
 	private static PreparedStatement insertUserStmt;
 //	private static PreparedStatement getUserIdStmt;
+	private static PreparedStatement insertRetweetStmt;
 
 	static void initDbParams() throws IOException {
 		Properties properties = new Properties();
@@ -49,6 +50,7 @@ public class SqlHelper {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(connectString, username, password);
+				insertRetweetStmt = con.prepareStatement("INSERT INTO statRetweets SET status_id = ?, user_id = ?, retweeted_at = ?;");
 				insertTweetStmt = con.prepareStatement("INSERT INTO statTweets SET id = ?, coordinates_lat = ?, coordinates_lon = ?, text = ?, retweet_count = ?, created_at = ?, in_reply_to_status_id = ?, user_id = ?;");
 				insertUserStmt = con.prepareStatement("INSERT INTO statUsers SET id = ?, screen_name = ?, name = ?, description = ?, lang = ?, followers_count = ?, statuses_count = ?, url = ?, profile_image_url = ?;");
 				//getUserIdStmt =  con.prepareStatement("SELECT id FROM users WHERE screen_name = ?;");
@@ -70,6 +72,12 @@ public class SqlHelper {
 			getConnection();
 		return insertUserStmt;
 	}
+	
+	public static PreparedStatement getInsertRetweetStmt() {
+		if(insertRetweetStmt == null)
+			getConnection();
+		return insertRetweetStmt;
+	}
 //
 //	public static PreparedStatement getGetUserIdStmt() {
 //		if(getUserIdStmt == null)
@@ -79,6 +87,11 @@ public class SqlHelper {
 	
 	public static void insertTweet(Status tweet) throws SQLException {
 		try {
+			if (tweet.getRetweetedStatus() != null) {
+				insertRetweet(tweet);
+				return;
+			}
+			
 			PreparedStatement insertTweetStmt = SqlHelper.getInsertTweetStmt();
 			insertTweetStmt.setLong(1, tweet.getId());
 			if(tweet.getGeoLocation() != null)
@@ -118,6 +131,18 @@ public class SqlHelper {
 
 		} catch (MySQLIntegrityConstraintViolationException e) {
 			// ignore, this is just a duplicate user entry, that's normal
+		}
+	}
+
+	public static void insertRetweet(Status status) throws SQLException {
+		try {
+			PreparedStatement insertRetweetStmt = SqlHelper.getInsertRetweetStmt();
+			insertRetweetStmt.setLong(1, status.getRetweetedStatus().getId());
+			insertRetweetStmt.setLong(2, status.getUser().getId());
+			insertRetweetStmt.setTimestamp(3, new Timestamp(status.getCreatedAt().getTime()));
+			insertRetweetStmt.executeUpdate();
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			// ignore, this is just a duplicate tweet entry, that's rather normal
 		}
 	}
 
