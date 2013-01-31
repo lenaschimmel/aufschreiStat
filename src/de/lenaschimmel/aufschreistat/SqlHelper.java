@@ -87,6 +87,11 @@ public class SqlHelper {
 	
 	public static void insertTweet(Status tweet) throws SQLException {
 		try {
+			if (tweet.getRetweetedStatus() != null) {
+				insertRetweet(tweet);
+				return;
+			}
+			
 			PreparedStatement insertTweetStmt = SqlHelper.getInsertTweetStmt();
 			insertTweetStmt.setLong(1, tweet.getId());
 			if(tweet.getGeoLocation() != null)

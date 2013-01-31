@@ -100,21 +100,12 @@ public class PastImporter {
 				QueryResult result = twitter.search(query);
 				List<Status> tweets = result.getTweets();
 				int inserted = 0;
-				int insertedRt = 0;
+				
 				for (Status status : tweets) {
-					if (status.getRetweetedStatus() != null) {
-
-						System.out.println(status.getCreatedAt() + " : "
-								+ status.getText());
-
-						SqlHelper.insertRetweet(status);
-						insertedRt++;
-					} else {
-						// SqlHelper.insertTweet(status);
-						// SqlHelper.insertUser(status.getUser());
-						// inserted++;
-					}
-
+					SqlHelper.insertTweet(status);
+					SqlHelper.insertUser(status.getUser());
+					inserted++;
+				
 					if (status.getId() < minId || minId == 0)
 						minId = status.getId();
 
@@ -122,9 +113,7 @@ public class PastImporter {
 				System.out
 						.println("#### Inserted "
 								+ inserted
-								+ " tweets and "
-								+ insertedRt
-								+ " retweets. Waiting a little bit. Curent rate limit: "
+								+ " tweets. Waiting a little bit. Curent rate limit: "
 								+ result.getRateLimitStatus().getRemaining());
 				try {
 					if (result.getRateLimitStatus().getRemaining() > 100)
