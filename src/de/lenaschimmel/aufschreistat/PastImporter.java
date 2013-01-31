@@ -42,26 +42,27 @@ public class PastImporter {
 			System.exit(1);
 		}
 
-		 //importMissingPrecedingTweets();
-		
-		 importPastTweets();
+		// importMissingPrecedingTweets();
+
+		importPastTweets();
 	}
-	
-	private static void importMissingPrecedingTweets() throws SQLException, TwitterException {
+
+	private static void importMissingPrecedingTweets() throws SQLException,
+			TwitterException {
 		Twitter twitter = TwitterFactory.getSingleton();
-		
+
 		Statement stmt = con.createStatement();
 		String query = "SELECT l.in_reply_to_status_id FROM statTweets l WHERE l.in_reply_to_status_id > -1	AND l.in_reply_to_status_id NOT	IN (SELECT r.id	FROM statTweets r)";
 
 		ResultSet result = stmt.executeQuery(query);
-		while(result.next())
-		{
+		while (result.next()) {
 			Status status = null;
 			try {
 				long id = result.getLong(1);
 				status = twitter.showStatus(id);
-				System.out.println("https://twitter.com/dsgfsdgrdegreztg/status/" +  status.getId() + " : "
-						+ status.getText());
+				System.out
+						.println("https://twitter.com/dsgfsdgrdegreztg/status/"
+								+ status.getId() + " : " + status.getText());
 
 				SqlHelper.insertTweet(status);
 				SqlHelper.insertUser(status.getUser());
@@ -69,7 +70,8 @@ public class PastImporter {
 				System.out.println(e1.getMessage());
 			}
 			try {
-				if(status != null && status.getRateLimitStatus().getRemaining() > 100)
+				if (status != null
+						&& status.getRateLimitStatus().getRemaining() > 100)
 					Thread.sleep(2000);
 				else
 					Thread.sleep(6000);
@@ -78,11 +80,11 @@ public class PastImporter {
 		}
 
 	}
-	
-	public static void importPastTweets() throws SQLException
-	{
+
+	public static void importPastTweets() throws SQLException {
 		Statement stmt = con.createStatement();
-		ResultSet minResult = stmt.executeQuery("SELECT min(id) FROM statTweets;");
+		ResultSet minResult = stmt
+				.executeQuery("SELECT min(id) FROM statTweets;");
 		minResult.next();
 
 		Twitter twitter = TwitterFactory.getSingleton();
@@ -98,29 +100,34 @@ public class PastImporter {
 				QueryResult result = twitter.search(query);
 				List<Status> tweets = result.getTweets();
 				int inserted = 0;
-				int skipped = 0;
+				int insertedRt = 0;
 				for (Status status : tweets) {
 					if (status.getRetweetedStatus() != null) {
-						skipped++;
-						continue;
-					}
-					System.out.println(status.getCreatedAt() + " : "
-							+ status.getText());
 
-					SqlHelper.insertTweet(status);
-					SqlHelper.insertUser(status.getUser());
+						System.out.println(status.getCreatedAt() + " : "
+								+ status.getText());
+
+						SqlHelper.insertRetweet(status);
+						insertedRt++;
+					} else {
+						// SqlHelper.insertTweet(status);
+						// SqlHelper.insertUser(status.getUser());
+						// inserted++;
+					}
 
 					if (status.getId() < minId || minId == 0)
 						minId = status.getId();
 
-					inserted++;
 				}
-				System.out.println("#### Inserted " + inserted
-						+ " tweets, skipped " + skipped
-						+ " retweets. Waiting a little bit. Curent rate limit: "
-						+ result.getRateLimitStatus().getRemaining());
+				System.out
+						.println("#### Inserted "
+								+ inserted
+								+ " tweets and "
+								+ insertedRt
+								+ " retweets. Waiting a little bit. Curent rate limit: "
+								+ result.getRateLimitStatus().getRemaining());
 				try {
-					if(result.getRateLimitStatus().getRemaining() > 100)
+					if (result.getRateLimitStatus().getRemaining() > 100)
 						Thread.sleep(2000);
 					else
 						Thread.sleep(6000);
