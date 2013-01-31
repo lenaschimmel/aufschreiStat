@@ -25,6 +25,8 @@ public class Main {
 	private static final class PrintingStatusListener implements StatusListener {
 		public void onStatus(Status status) {
 			try {
+				System.out.println(status.getCreatedAt() + " : "
+						+ status.getText());
 				SqlHelper.insertTweet(status);
 				SqlHelper.insertUser(status.getUser());
 			} catch (SQLException e) {
@@ -74,5 +76,7 @@ public class Main {
 
 		twitterStream.addListener(listener);
 		twitterStream.filter(query);
+		
+		System.out.println("Tweets müssten jetzt ankommen...");
 	}
 }

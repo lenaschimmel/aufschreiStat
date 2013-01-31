@@ -69,7 +69,7 @@ public class PastImporter {
 					SqlHelper.insertTweet(status);
 					SqlHelper.insertUser(status.getUser());
 
-					if (status.getId() < minId)
+					if (status.getId() < minId || minId == 0)
 						minId = status.getId();
 
 					inserted++;
