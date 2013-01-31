@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,9 +43,9 @@ public class PastImporter {
 			System.exit(1);
 		}
 
-		// importMissingPrecedingTweets();
+		importMissingPrecedingTweets();
 
-		importPastTweets();
+		//importPastTweets();
 	}
 
 	private static void importMissingPrecedingTweets() throws SQLException,
@@ -52,19 +53,19 @@ public class PastImporter {
 		Twitter twitter = TwitterFactory.getSingleton();
 
 		Statement stmt = con.createStatement();
-		String query = "SELECT l.in_reply_to_status_id FROM statTweets l WHERE l.in_reply_to_status_id > -1	AND l.in_reply_to_status_id NOT	IN (SELECT r.id	FROM statTweets r)";
+		String query = "SELECT l.in_reply_to_status_id, l.text, l.created_at FROM statTweets l WHERE l.in_reply_to_status_id > -1	AND l.in_reply_to_status_id NOT	IN (SELECT r.id	FROM statTweets r)";
 
 		ResultSet result = stmt.executeQuery(query);
 		while (result.next()) {
 			Status status = null;
 			try {
 				long id = result.getLong(1);
+				String text = result.getString(2);
+				Timestamp createdAt = result.getTimestamp(3);
 				status = twitter.showStatus(id);
-				System.out
-						.println("https://twitter.com/dsgfsdgrdegreztg/status/"
-								+ status.getId() + " : " + status.getText());
-
+				System.out.print("Orig: ");
 				SqlHelper.insertTweet(status);
+				System.out.println("Reply: " + createdAt + ": " + text + "\n");
 				SqlHelper.insertUser(status.getUser());
 			} catch (Exception e1) {
 				System.out.println(e1.getMessage());

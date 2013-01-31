@@ -87,6 +87,8 @@ public class SqlHelper {
 	
 	public static void insertTweet(Status tweet) throws SQLException {
 		try {
+			System.out.println(tweet.getCreatedAt() + ": " + tweet.getText());
+
 			if (tweet.getRetweetedStatus() != null) {
 				insertRetweet(tweet);
 				return;
