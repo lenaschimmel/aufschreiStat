@@ -20,6 +20,8 @@ import twitter4j.TwitterFactory;
 
 public class PastImporter {
 
+	private static Connection con;
+
 	/**
 	 * @param args
 	 * @throws IOException
@@ -34,12 +36,51 @@ public class PastImporter {
 		SqlHelper.initDbParams();
 		SqlHelper.getConnection();
 
-		Connection con = SqlHelper.getConnection();
+		con = SqlHelper.getConnection();
 		if (con == null) {
 			System.err.println("Connection error on startup. Exiting.");
 			System.exit(1);
 		}
 
+		 //importMissingPrecedingTweets();
+		
+		 importPastTweets();
+	}
+	
+	private static void importMissingPrecedingTweets() throws SQLException, TwitterException {
+		Twitter twitter = TwitterFactory.getSingleton();
+		
+		Statement stmt = con.createStatement();
+		String query = "SELECT l.in_reply_to_status_id FROM statTweets l WHERE l.in_reply_to_status_id > -1	AND l.in_reply_to_status_id NOT	IN (SELECT r.id	FROM statTweets r)";
+
+		ResultSet result = stmt.executeQuery(query);
+		while(result.next())
+		{
+			Status status = null;
+			try {
+				long id = result.getLong(1);
+				status = twitter.showStatus(id);
+				System.out.println("https://twitter.com/dsgfsdgrdegreztg/status/" +  status.getId() + " : "
+						+ status.getText());
+
+				SqlHelper.insertTweet(status);
+				SqlHelper.insertUser(status.getUser());
+			} catch (Exception e1) {
+				System.out.println(e1.getMessage());
+			}
+			try {
+				if(status != null && status.getRateLimitStatus().getRemaining() > 100)
+					Thread.sleep(2000);
+				else
+					Thread.sleep(6000);
+			} catch (InterruptedException e) {
+			}
+		}
+
+	}
+	
+	public static void importPastTweets() throws SQLException
+	{
 		Statement stmt = con.createStatement();
 		ResultSet minResult = stmt.executeQuery("SELECT min(id) FROM statTweets;");
 		minResult.next();

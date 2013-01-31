@@ -9,6 +9,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
 public class SimpleAnalytics {
 
 	private static Connection con;
@@ -18,25 +23,27 @@ public class SimpleAnalytics {
 	 * @throws IOException
 	 * @throws ParseException
 	 * @throws SQLException
+	 * @throws TwitterException 
 	 */
 	public static void main(String[] args) throws IOException, ParseException,
-			SQLException {
+			SQLException, TwitterException {
 		SqlHelper.initDbParams();
 		con = SqlHelper.getConnection();
 
-		printKeywordTable();
+				printKeywordTable();
 	}
 
 	private static void printKeywordTable() throws ParseException, SQLException {
-		String[] columns = {"","männer","frauen","sexismus","brüderle","thema"};
-		
+		String[] columns = { "", "männer", "frauen", "sexismus", "brüderle",
+				"thema" };
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
 		System.out.print("Zeit;");
-		for(String pat : columns)
+		for (String pat : columns)
 			System.out.print(((pat.length() == 0) ? "[alle]" : pat) + ";");
 		System.out.println();
-		
+
 		long start = sdf.parse("25.01.2013 00:00").getTime();
 		long end = sdf.parse("31.01.2013 8:00").getTime();
 		long interval = 1000 * 60 * 60;
@@ -44,27 +51,26 @@ public class SimpleAnalytics {
 			long intervalEnd = intervalStart + interval;
 			System.out.print(sdf.format(new Date(intervalStart)) + ";");
 
-			for(String pat : columns)
-				System.out.print(countTweetsForKeyword(intervalStart, intervalEnd, "%"+pat+"%") + ";");
+			for (String pat : columns)
+				System.out.print(countTweetsForKeyword(intervalStart,
+						intervalEnd, "%" + pat + "%") + ";");
 			System.out.println();
 		}
 	}
 
-	private static long countTweetsForKeyword(long intervalStart, long intervalEnd, String pattern)
-			throws SQLException {
+	private static long countTweetsForKeyword(long intervalStart,
+			long intervalEnd, String pattern) throws SQLException {
 		Statement stmt = con.createStatement();
 		String query = "SELECT COUNT(*) FROM statTweets WHERE created_at > FROM_UNIXTIME("
-				+ intervalStart / 1000
+				+ intervalStart
+				/ 1000
 				+ ") AND created_at < FROM_UNIXTIME("
-				+ intervalEnd / 1000 + ") AND text LIKE '"+pattern+"';";
-		
-		
-		ResultSet minResult = stmt
-				.executeQuery(query);
+				+ intervalEnd / 1000 + ") AND text LIKE '" + pattern + "';";
+
+		ResultSet minResult = stmt.executeQuery(query);
 		minResult.next();
 
 		long ret = minResult.getLong(1);
 		return ret;
 	}
-
 }
