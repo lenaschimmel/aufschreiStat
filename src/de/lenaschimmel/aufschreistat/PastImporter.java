@@ -58,8 +58,8 @@ public class PastImporter {
 		ResultSet result = stmt.executeQuery(query);
 		while (result.next()) {
 			Status status = null;
+			long id = result.getLong(1);
 			try {
-				long id = result.getLong(1);
 				String text = result.getString(2);
 				Timestamp createdAt = result.getTimestamp(3);
 				status = twitter.showStatus(id);
@@ -69,6 +69,7 @@ public class PastImporter {
 				SqlHelper.insertUser(status.getUser());
 			} catch (Exception e1) {
 				System.out.println(e1.getMessage());
+				SqlHelper.insertDummyTweet(id, e1.getMessage());
 			}
 			try {
 				if (status != null
