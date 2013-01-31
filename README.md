@@ -69,3 +69,15 @@ Für den PastImporter braucht es außerdem OAuth Authorizan Tokens - die zu hole
         PRIMARY KEY (`id`),
         KEY `screen_name` (`screen_name`,`lang`)
       ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+        --
+        -- Tabellenstruktur für Tabelle `statRetweets`
+        --
+        
+        CREATE TABLE IF NOT EXISTS `statRetweets` (
+          `status_id` bigint(20) NOT NULL,
+          `user_id` bigint(20) NOT NULL,
+          `retweeted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY (`status_id`,`user_id`),
+          KEY `retweeted_at` (`retweeted_at`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
