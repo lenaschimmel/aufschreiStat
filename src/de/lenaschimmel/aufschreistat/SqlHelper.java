@@ -2,15 +2,19 @@ package de.lenaschimmel.aufschreistat;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Properties;
+
+import twitter4j.Status;
+import twitter4j.User;
+
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class SqlHelper {
 	static Connection con;
@@ -19,7 +23,7 @@ public class SqlHelper {
 	private static String password;
 	private static PreparedStatement insertTweetStmt;
 	private static PreparedStatement insertUserStmt;
-	private static PreparedStatement getUserIdStmt;
+//	private static PreparedStatement getUserIdStmt;
 
 	static void initDbParams() throws IOException {
 		Properties properties = new Properties();
@@ -45,9 +49,9 @@ public class SqlHelper {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(connectString, username, password);
-				insertTweetStmt = con.prepareStatement("INSERT INTO tweets SET id = ?, user_id = ?, text = ?, timestamp = ?, reply_status_id = ?;");
-				insertUserStmt = con.prepareStatement("INSERT INTO users SET id = ?, screen_name = ?, name = ?, url = ?, profile_image_url = ?;", Statement.RETURN_GENERATED_KEYS);
-				getUserIdStmt =  con.prepareStatement("SELECT id FROM users WHERE screen_name = ?;");
+				insertTweetStmt = con.prepareStatement("INSERT INTO statTweets SET id = ?, coordinates_lat = ?, coordinates_lon = ?, text = ?, retweet_count = ?, created_at = ?, in_reply_to_status_id = ?, user_id = ?;");
+				insertUserStmt = con.prepareStatement("INSERT INTO statUsers SET id = ?, screen_name = ?, name = ?, description = ?, lang = ?, followers_count = ?, statuses_count = ?, url = ?, profile_image_url = ?;");
+				//getUserIdStmt =  con.prepareStatement("SELECT id FROM users WHERE screen_name = ?;");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -66,10 +70,55 @@ public class SqlHelper {
 			getConnection();
 		return insertUserStmt;
 	}
-
-	public static PreparedStatement getGetUserIdStmt() {
-		if(getUserIdStmt == null)
-			getConnection();
-		return getUserIdStmt;
+//
+//	public static PreparedStatement getGetUserIdStmt() {
+//		if(getUserIdStmt == null)
+//			getConnection();
+//		return getUserIdStmt;
+//	}
+	
+	public static void insertTweet(Status tweet) throws SQLException {
+		try {
+			PreparedStatement insertTweetStmt = SqlHelper.getInsertTweetStmt();
+			insertTweetStmt.setLong(1, tweet.getId());
+			if(tweet.getGeoLocation() != null)
+			{
+				insertTweetStmt.setFloat(2, (float)tweet.getGeoLocation().getLatitude());
+				insertTweetStmt.setFloat(3, (float)tweet.getGeoLocation().getLongitude());
+			}
+			else
+			{
+				insertTweetStmt.setFloat(2, 0);
+				insertTweetStmt.setFloat(3, 0);
+			}
+			insertTweetStmt.setString(4, tweet.getText());
+			insertTweetStmt.setInt(5, (int)tweet.getRetweetCount());
+			insertTweetStmt.setTimestamp(6, new Timestamp(tweet.getCreatedAt().getTime()));
+			insertTweetStmt.setLong(7, tweet.getInReplyToStatusId());
+			insertTweetStmt.setLong(8, tweet.getUser().getId());
+			insertTweetStmt.executeUpdate();
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			// ignore, this is just a duplicate tweet entry, that's rather normal
+		}
 	}
+
+	public static void insertUser(User user) throws SQLException {
+		try {
+			PreparedStatement insertUserStmt = SqlHelper.getInsertUserStmt();
+			insertUserStmt.setLong(1, user.getId());
+			insertUserStmt.setString(2, user.getScreenName());
+			insertUserStmt.setString(3, user.getName());
+			insertUserStmt.setString(4, user.getDescription());
+			insertUserStmt.setString(5, user.getLang());
+			insertUserStmt.setInt(6, user.getFollowersCount());
+			insertUserStmt.setInt(7, user.getStatusesCount());
+			insertUserStmt.setString(8, user.getURL());
+			insertUserStmt.setString(9, user.getProfileImageURL());
+			insertUserStmt.executeUpdate();
+
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			// ignore, this is just a duplicate user entry, that's normal
+		}
+	}
+
 }

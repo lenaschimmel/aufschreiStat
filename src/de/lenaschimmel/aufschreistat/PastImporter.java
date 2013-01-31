@@ -2,9 +2,7 @@ package de.lenaschimmel.aufschreistat;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,10 +24,11 @@ public class PastImporter {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws TwitterException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static void main(String[] args) throws IOException,
-			ParserConfigurationException, SAXException, TwitterException, SQLException {
+			ParserConfigurationException, SAXException, TwitterException,
+			SQLException {
 		SqlHelper.initDbParams();
 		SqlHelper.getConnection();
 
@@ -38,28 +37,46 @@ public class PastImporter {
 			System.err.println("Connection error on startup. Exiting.");
 			System.exit(1);
 		}
-		
-		Statement stmt = con.createStatement();
-		ResultSet minResult = stmt.executeQuery("SELECT min(id) FROM tweets;");
-		minResult.next();
-		
+
+		// Statement stmt = con.createStatement();
+		// ResultSet minResult =
+		// stmt.executeQuery("SELECT min(id) FROM tweets;");
+		// minResult.next();
+
 		Twitter twitter = TwitterFactory.getSingleton();
-		long minId = minResult.getLong(1);
-				//294747096463073280L;
+		long minId = 0; // 295900492507254785L;
+		// minResult.getLong(1);
+		// 294747096463073280L;
 
 		while (true) {
 			Query query = new Query("#aufschrei");
 			query.setMaxId(minId);
-			query.setCount(199);
+			query.setCount(100);
 
 			QueryResult result = twitter.search(query);
 			List<Status> tweets = result.getTweets();
+			int inserted = 0;
+			int skipped = 0;
 			for (Status status : tweets) {
-				Main.saveStatus(status);
-				if(status.getId() < minId)
+				if (status.getRetweetedStatus() != null) {
+					skipped++;
+					continue;
+				}
+				System.out.println(status.getCreatedAt() + " : "
+						+ status.getText());
+
+				SqlHelper.insertTweet(status);
+				SqlHelper.insertUser(status.getUser());
+
+				if (status.getId() < minId)
 					minId = status.getId();
+
+				inserted++;
 			}
-			System.out.println("#### Inserted " + tweets.size() + " tweets. Waiting a little bit. Curent rate limit: " + result.getRateLimitStatus().getRemaining());
+			System.out.println("#### Inserted " + inserted
+					+ " tweets, skipped " + skipped
+					+ " retweets. Waiting a little bit. Curent rate limit: "
+					+ result.getRateLimitStatus().getRemaining());
 			try {
 				Thread.sleep(6000);
 			} catch (InterruptedException e) {
