@@ -24,7 +24,12 @@ public class Main {
 
 	private static final class PrintingStatusListener implements StatusListener {
 		public void onStatus(Status status) {
-			saveStatus(status);
+			try {
+				SqlHelper.insertTweet(status);
+				SqlHelper.insertUser(status.getUser());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
@@ -50,48 +55,6 @@ public class Main {
 		}
 	}
 
-	public static void insertTweet(long id, long user_id, String text,
-			long timestamp, Long reply_status_id) throws SQLException {
-		try {
-			PreparedStatement insertTweetStmt = SqlHelper.getInsertTweetStmt();
-			insertTweetStmt.setLong(1, id);
-			insertTweetStmt.setLong(2, user_id);
-			insertTweetStmt.setString(3, text);
-			insertTweetStmt.setTimestamp(4, new Timestamp(timestamp));
-			if (reply_status_id != null && reply_status_id.longValue() != 0)
-				insertTweetStmt.setLong(5, reply_status_id);
-			else
-				insertTweetStmt.setNull(5, Types.BIGINT);
-			insertTweetStmt.executeUpdate();
-		} catch (MySQLIntegrityConstraintViolationException e) {
-			// ignore, this is just a duplicate tweet entry, that's rather normal
-		}
-	}
-
-	public static long insertUser(long id, String screen_name, String name,
-			String url, String profile_image_url) throws SQLException {
-		try {
-			PreparedStatement insertUserStmt = SqlHelper.getInsertUserStmt();
-			if(id > 0)
-				insertUserStmt.setLong(1, id);
-			else
-				insertUserStmt.setNull(1, Types.BIGINT);
-			insertUserStmt.setString(2, screen_name);
-			insertUserStmt.setString(3, name);
-			insertUserStmt.setString(4, url);
-			insertUserStmt.setString(5, profile_image_url);
-			insertUserStmt.executeUpdate();
-			ResultSet keyResult = insertUserStmt.getGeneratedKeys();
-			if (keyResult.next())
-				return keyResult.getLong(1);
-			else
-				return 0;
-		} catch (MySQLIntegrityConstraintViolationException e) {
-			// ignore, this is just a duplicate user entry, that's normal
-			return id;
-		}
-	}
-
 	public static void main(String[] args) throws TwitterException,
 			IOException, SQLException {
 		SqlHelper.initDbParams();
@@ -112,26 +75,4 @@ public class Main {
 		twitterStream.addListener(listener);
 		twitterStream.filter(query);
 	}
-
-	public static void saveStatus(Status status) {
-		User user = status.getUser();
-		System.out.println(user.getName() + " : " + status.getText());
-		try {
-			insertTweet(status.getId(), user.getId(), status.getText(),
-					status.getCreatedAt().getTime(),
-					status.getInReplyToStatusId());
-			try {
-				insertUser(user.getId(), user.getScreenName(),
-						user.getName(), user.getURL(),
-						user.getMiniProfileImageURL());
-			} catch (MySQLIntegrityConstraintViolationException e) {
-				// e.printStackTrace();
-				// ignore, this is just a duplicate user entry, that's
-				// normal
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 }
