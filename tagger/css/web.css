@@ -175,7 +175,7 @@ nav {
 }
 
 #tweet #languages ul {
-	width: 700px;
+	width: 500px;
 	margin-left: auto;
   	margin-right: auto;
 	padding: 0;
@@ -184,7 +184,7 @@ nav {
 #tweet #languages ul li {
 	float: left;
 	list-style-type: none;
-	margin: 5px;
+	margin-right: 5px;
 	padding:3px;
 	padding-left: 27px;
 
@@ -233,7 +233,6 @@ nav {
 
 #tweet #usedtags {
 	clear: both;
-	margin-top: 15px;
 }
 
 #tweet #usedtags .item {

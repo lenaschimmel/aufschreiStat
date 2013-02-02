@@ -18,6 +18,7 @@ Aufschrei.Controller = (function(app) {
 	initUI = function() {
 		$('.nexttweet').click(function(e) {
 			if(working) return;
+			if(used_tags.length > 0) setTweetAsTaggedInDatabase();
 			if(used_tags.length > 0) saveTagsToDatabase();
 			if(current_lang != "-1") saveLangToDatabase();
 			getRandomTweetFromDatabase();
@@ -59,6 +60,16 @@ Aufschrei.Controller = (function(app) {
 		var tweet = current_tweet;
 		$.each(used_tags, function(index, value) {
 			sendTagToDatabase(value,tweet);
+		});
+	},
+
+	setTweetAsTaggedInDatabase = function() {
+		var tweet = current_tweet;
+		$.ajax({
+  				type: "POST",
+  				url: api_url,
+  				data: {query: "updatetweet", tweet: tweet},
+  				success: null
 		});
 	},
 
@@ -113,9 +124,9 @@ Aufschrei.Controller = (function(app) {
 	showTweet = function(html) {
 		var tweet_text = $(".js-tweet-text.tweet-text", html).html();
 		var user_screenname = $(".username.js-action-profile-name", html).html();
-
 	
-		if(tweet_text == '' || user_screenname == '') {
+		if(tweet_text == null || user_screenname == null) {
+			console.log("the tweet is a lie!");
 			getRandomTweetFromDatabase();
 			return;
 		}
