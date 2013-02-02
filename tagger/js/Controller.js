@@ -3,8 +3,10 @@ Aufschrei.Controller = (function(app) {
 	var last_tweets,
 	all_tags,
 	used_tags,
-	current = "-1",
-	working = false;
+	current_tweet = "-1",
+	current_lang = "-1",
+	working = false,
+	api_url = 'api.php',
 
 	init = function() {
 		initUI();
@@ -17,11 +19,13 @@ Aufschrei.Controller = (function(app) {
 		$('.nexttweet').click(function(e) {
 			if(working) return;
 			if(used_tags.length > 0) saveTagsToDatabase();
+			if(current_lang != "-1") saveLangToDatabase();
 			getRandomTweetFromDatabase();
-			$('#usedtags').html('');
-			$('.library_entry').removeClass('used');
-			used_tags = new Array();
 			displayButton();
+		});
+
+		$('.lang').click(function(e) {
+			setLanguage($(e.target).attr('lang'));
 		});
 	},
 
@@ -36,7 +40,7 @@ Aufschrei.Controller = (function(app) {
 		working = true;
 		$.ajax({
   				type: "POST",
-  				url: '/tagger/api.php',
+  				url: api_url,
   				data: {query: "random"},
   				success: getTweetFromTwitter
 		});
@@ -45,34 +49,45 @@ Aufschrei.Controller = (function(app) {
 	getTagsFromDatabase = function() {
 		$.ajax({
   				type: "POST",
-  				url: '/tagger/api.php',
+  				url: api_url,
   				data: {query: "tags"},
   				success: showTags
 		});
 	},
 
 	saveTagsToDatabase = function() {
+		var tweet = current_tweet;
 		$.each(used_tags, function(index, value) {
-			sendTagToDatabase(value);
+			sendTagToDatabase(value,tweet);
 		});
 	},
 
-	sendTagToDatabase = function(tag_id) {
-		console.log("sending tag to database: " + tag_id + " for tweet: " + current);
+	sendTagToDatabase = function(tag_id,current_tweet) {
 		$.ajax({
   				type: "POST",
-  				url: '/tagger/api.php',
-  				data: {query: "updatetag", id: tag_id, tweet: current},
+  				url: api_url,
+  				data: {query: "updatetag", id: tag_id, tweet: current_tweet},
   				success: null
 		});
-	}
+	},
+
+	saveLangToDatabase = function() {
+		var tweet = current_tweet;
+		var lang = current_lang;
+		$.ajax({
+  				type: "POST",
+  				url: api_url,
+  				data: {query: "updatelang", lang: lang, tweet: tweet},
+  				success: null
+		});
+	},
 
 	getTweetFromTwitter = function(tweet) {
 		last_tweets.push($.parseJSON(tweet).result[0].id);
-		current = $.parseJSON(tweet).result[0].id;
+		current_tweet = $.parseJSON(tweet).result[0].id;
 		$.ajax({
   				type: "POST",
-  				url: '/tagger/api.php',
+  				url: api_url,
   				data: {query: "url", url: 'https://twitter.com/'+$.parseJSON(tweet).result[0].user+'/status/'+$.parseJSON(tweet).result[0].id},
   				success: showTweet
 		});
@@ -110,10 +125,25 @@ Aufschrei.Controller = (function(app) {
 		working = false;
 	},
 
+	setLanguage = function(lang) {
+		if(working) return;
+		$('.lang').removeClass('used');
+		$('.lang.'+lang).addClass('used');
+		current_lang = lang;
+	},
+
 	clear = function() {
 		$('#user_name').html('');
 		$('#text').html('');
 		$('#spinner').fadeIn();
+		$('.lang').removeClass('used');
+		$('#usedtags').html('');
+
+		$('.library_entry').removeClass('used');
+		used_tags = new Array();
+
+		current_tweet = "-1";
+		current_lang = "-1";
 	},
 
 	displayButton = function() {
