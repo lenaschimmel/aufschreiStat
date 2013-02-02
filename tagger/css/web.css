@@ -1,0 +1,195 @@
+body {
+	background-color: #474747;
+	background-image: url(img/bg.png);
+	background-repeat: repeat;
+	font-family: 'Roboto Condensed', sans-serif;
+}
+
+header {
+	width:800px;
+	margin-top: 70px;
+	margin-left: auto;
+  	margin-right: auto;
+
+  	text-align: center;
+}
+
+header h1 {
+	color: #DDD;
+}
+
+header h2 {
+	margin-top: -20px;
+	color: #DDD;
+}
+
+nav {
+	position: absolute;
+	top:0px;
+	left:0px;
+
+	width:100%;
+	height:50px;
+
+	background: rgba(33,33,33,0.9);
+}
+
+#tags {
+	margin-left: 50px;
+	float:left;
+}
+#tags #library ul {
+	width: 200px;
+	margin: 0;
+	padding: 0;
+}
+
+#tags #library h1 {
+	color: #DDD;
+}
+
+
+#tags #library ul li {
+	float: left;
+	list-style-type: none;
+	margin: 5px;
+	padding: 5px 0 5px 0;
+
+	margin-bottom: 5px;
+	padding: 5px;
+
+	background: #DDD;
+	color: #333;
+
+	border-color: rgb(29,112,245);
+    border-style: solid;
+   	border-width: 2px;
+
+    -moz-border-radius:  5px;  
+   	-webkit-border-radius: 5px;  
+    border-radius: 5px;
+}
+
+#tags #library ul li:hover {
+	cursor: pointer;
+}
+
+#tags #library ul .used {
+	background: rgb(29,112,245);
+}
+
+#tweet {
+	width:500px;
+	margin-left: auto;
+  	margin-right: auto;
+}
+
+#tweet #nav {
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+
+#tweet #nav .button {
+	display:block;
+    margin:0px auto;
+
+    background: rgb(29,112,245);
+
+
+	border-color: rgb(29,112,245);
+    border-style: solid;
+   	border-width: 2px;
+
+    -moz-border-radius:  5px;  
+   	-webkit-border-radius: 5px;  
+    border-radius: 5px;
+
+    font-size: 1em;
+	color: #DDD;
+}
+
+#tweet #nav .button:hover {
+	border-color: #333;
+	cursor: pointer;
+}
+
+#tweet #content{
+
+	background-color: #DDD;
+
+	border-color: #DF013A;
+	border-style: solid;
+	border-width: 2px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-khtml-border-radius: 8px;
+	border-radius: 8px;
+
+	padding: 10px;
+
+
+	color: #333;
+}
+
+#tweet #content #text {
+	margin-top: 5px;
+}
+
+#tweet #content #text a{
+	text-decoration: underline;
+	color: #222;
+}
+
+#tweet #content #text a:visited{
+	text-decoration: underline;
+	color: #222;
+}
+
+#tweet #content #user_name {
+	margin-left: 3px;
+	font-size: 1em;
+}
+
+#tweet #content #user_image {
+	margin-top: 5px;
+
+	border-color: #333;
+	border-style: solid;
+	border-width: 1px;
+}
+
+#tweet #content #spinner {
+	position: relative;
+	width: 17px;
+	height: 17px;
+  	margin-left: auto;
+  	margin-right: auto;
+  	margin-top: auto;
+  	margin-bottom: auto;
+
+  	background-image: url(img/loader.gif);
+	background-repeat: no-repeat;
+}
+#tweet #usedtags {
+	margin-top: 5px;
+}
+
+#tweet #usedtags .item {
+	display: block;
+	float: left;
+
+	margin: 3px;
+
+	padding: 2px;
+
+	background: rgb(29,112,245);
+	color: #DDD;
+
+	border-color: rgb(29,112,245);
+    border-style: solid;
+   	border-width: 2px;
+
+   	-moz-border-radius:  3px;  
+   	-webkit-border-radius: 3px;  
+    border-radius: 3px;
+}
