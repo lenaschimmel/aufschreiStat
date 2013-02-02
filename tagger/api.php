@@ -47,8 +47,8 @@ function getHtmlForTweet($url) {
 }
 
 function updatetag() {
-	$id = $_POST['id'];
-	$tweet = $_POST['tweet'];
+	$id = mysql_real_escape_string($_POST['id']);
+	$tweet =  mysql_real_escape_string($_POST['tweet']);
 	$sql = mysql_query("INSERT INTO tweets_to_labels SET _label_id='$id', _tweet_id='$tweet' _count=1 ON DUPLICATE KEY UPDATE _count=_count+1");
 }
 
@@ -68,6 +68,3 @@ function returnSingleValue($result) {
 function returnError($error) {
 	print "{\"status\": \"error\", \"type\": \"".$error."\"}";
 }
-
-
-?>
