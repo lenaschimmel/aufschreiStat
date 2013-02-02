@@ -36,7 +36,7 @@ Aufschrei.Controller = (function(app) {
 		working = true;
 		$.ajax({
   				type: "POST",
-  				url: 'http://localhost:8888/aufschrei/api.php',
+  				url: '/tagger/api.php',
   				data: {query: "random"},
   				success: getTweetFromTwitter
 		});
@@ -45,7 +45,7 @@ Aufschrei.Controller = (function(app) {
 	getTagsFromDatabase = function() {
 		$.ajax({
   				type: "POST",
-  				url: 'http://localhost:8888/aufschrei/api.php',
+  				url: '/tagger/api.php',
   				data: {query: "tags"},
   				success: showTags
 		});
@@ -61,7 +61,7 @@ Aufschrei.Controller = (function(app) {
 		console.log("sending tag to database: " + tag_id + " for tweet: " + current);
 		$.ajax({
   				type: "POST",
-  				url: 'http://localhost:8888/aufschrei/api.php',
+  				url: '/tagger/api.php',
   				data: {query: "updatetag", id: tag_id, tweet: current},
   				success: null
 		});
@@ -72,7 +72,7 @@ Aufschrei.Controller = (function(app) {
 		current = $.parseJSON(tweet).result[0].id;
 		$.ajax({
   				type: "POST",
-  				url: 'http://localhost:8888/aufschrei/api.php',
+  				url: '/tagger/api.php',
   				data: {query: "url", url: 'https://twitter.com/'+$.parseJSON(tweet).result[0].user+'/status/'+$.parseJSON(tweet).result[0].id},
   				success: showTweet
 		});
