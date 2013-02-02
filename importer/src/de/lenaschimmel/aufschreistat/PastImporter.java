@@ -57,27 +57,32 @@ public class PastImporter {
 
 		ResultSet result = stmt.executeQuery(query);
 		while (result.next()) {
-			Status status = null;
-			long id = result.getLong(1);
 			try {
-				String text = result.getString(2);
-				Timestamp createdAt = result.getTimestamp(3);
-				status = twitter.showStatus(id);
-				System.out.print("Orig: ");
-				SqlHelper.insertTweet(status);
-				System.out.println("Reply: " + createdAt + ": " + text + "\n");
-				SqlHelper.insertUser(status.getUser());
-			} catch (Exception e1) {
-				System.out.println(e1.getMessage());
-				SqlHelper.insertDummyTweet(id, e1.getMessage());
-			}
-			try {
-				if (status != null
-						&& status.getRateLimitStatus().getRemaining() > 100)
-					Thread.sleep(2000);
-				else
-					Thread.sleep(2000);
-			} catch (InterruptedException e) {
+				Status status = null;
+				long id = result.getLong(1);
+				try {
+					String text = result.getString(2);
+					Timestamp createdAt = result.getTimestamp(3);
+					status = twitter.showStatus(id);
+					System.out.print("Orig: ");
+					SqlHelper.insertTweet(status);
+					System.out.println("Reply: " + createdAt + ": " + text + "\n");
+					SqlHelper.insertUser(status.getUser());
+				} catch (Exception e1) {
+					System.out.println(e1.getMessage());
+					SqlHelper.insertDummyTweet(id, e1.getMessage());
+				}
+				try {
+					if (status != null
+							&& status.getRateLimitStatus().getRemaining() > 100)
+						Thread.sleep(2000);
+					else
+						Thread.sleep(2000);
+				} catch (InterruptedException e) {
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 

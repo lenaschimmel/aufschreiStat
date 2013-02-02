@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="css/web.css">
+	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+	<script src="js/libs/jquery-1.7.2.min.js"></script>
+    <script src="js/libs/jcanvas.min.js"></script>
+    <script src="js/Aufschrei.js"></script>
+    <script src="js/Controller.js"></script>
+</head>
+<body>
+
+<header>
+<h1>Twag: tag a tweet<h1>
+<h2>Describe this tweet by selecting tags from the left.</h2>
+</header>
+
+<nav>
+
+</nav>
+
+<section>
+	<div id="tags">
+		<div id="library">
+			<h1>Tags</h1>
+			<ul id="tag_library">
+			</ul>
+		</div>
+	</div>
+	<div id="tweet">
+		<div id="nav">
+			<input class="field button nexttweet" type="submit"  value="get another tweet"/>
+		</div>
+		<div id="content">
+			<div id="spinner"></div>
+			<div id="user_name"></div>
+			<div id="text"></div>
+		</div>
+
+		<div id="usedtags">
+		</div>
+	</div>
+</section>
+
+</body>
+
+<script>Aufschrei.init();</script>
+</html>
