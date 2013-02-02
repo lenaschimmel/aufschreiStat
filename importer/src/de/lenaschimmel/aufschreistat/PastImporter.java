@@ -77,7 +77,7 @@ public class PastImporter {
 							&& status.getRateLimitStatus().getRemaining() > 100)
 						Thread.sleep(2000);
 					else
-						Thread.sleep(6000);
+						Thread.sleep(2000);
 				} catch (InterruptedException e) {
 				}
 			} catch (Exception e) {
