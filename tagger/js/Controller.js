@@ -106,15 +106,9 @@ Aufschrei.Controller = (function(app) {
 
 	showTags = function(tags) {
 		var obj = $.parseJSON(tags);
-		var parentElement;
+
 		$.each(obj.result, function(index, value) {
-			all_tags[value.id] = value;
-			if(!value.parent_id)
-	  			parentElement = $('#tag_library');
-			else
-				parentElement = $('#sublist'+value.parent_id);
-			parentElement.append('<li class="library_entry" id="' + value.id + '" title="' + value.description + '">' + value.label +
-						'<ul id="sublist' + value.id + '"></ul></li>');
+			createTag(value);
 		});
 
 		$(".library_entry").click(function(e) {
@@ -123,6 +117,40 @@ Aufschrei.Controller = (function(app) {
 			return false;
 		});
 
+	},
+
+	createTag = function(tag) {
+		var parentElement;
+		all_tags[tag.id] = tag;
+		if(!tag.parent_id)
+	  		parentElement = $('#tag_library');
+		else
+			parentElement = $('#sublist'+tag.parent_id);
+
+		var buttonId = "addSubtagTo" + tag.id;
+
+		parentElement.append('<li class="library_entry" id="' + tag.id + '" title="' + tag.description + '">' + tag.label +
+					'<span class="addButton" id="'+ buttonId  +'" title="Click to add subtag">+</span><ul id="sublist' + tag.id + '"></ul></li>');
+
+		$('#'+buttonId).click(function(target) {
+			var label = prompt("Name für den neuen Tag");
+			var description = prompt("Beschreibung für den neuen Tag");
+			createTagInDatabase(label, description, tag.id);
+		});
+	},
+
+	createTagInDatabase = function(label, description, parent_id) {
+		$.ajax({
+  				type: "POST",
+  				url: api_url,
+  				data: {query: "createtag", label: label, description : description, parent_id : parent_id},
+  				success: createTagFromServer
+		});
+	},
+
+	createTagFromServer = function(json) {
+		var answer = $.parseJSON(json);
+		createTag(answer.result);
 	},
 
 	showTweet = function(html) {

@@ -19,6 +19,8 @@ function parseQuery($query) {
 		getHtmlForTweet($_POST['url']);
 	} else if($query == "tags") {
 		getTags();
+	} else if($query == "createtag") {
+		createTag();
 	} else if($query == "updatetweet" && isset($_POST['tweet'])) {
 		updatetweet();
 	} else if($query == "updatetag" && isset($_POST['id']) && isset($_POST['tweet'])){
@@ -47,6 +49,20 @@ function getTags() {
 	    $encodedResult = array_map(utf8_encode, $result);
 	    $return[] = $encodedResult;
 	}
+	return returnArray(json_encode($return));
+}
+
+function createTag() {
+	$label =  mysql_real_escape_string($_POST['label']);
+	$description =  mysql_real_escape_string($_POST['description']);
+	$parent_id =  mysql_real_escape_string($_POST['parent_id']);
+	$sql = mysql_query("INSERT INTO statLabels SET label='$label', description='$description', parent_id='$parent_id';");
+	mysql_query($sql);
+	$id = mysql_insert_id();
+	$return['id'] = $id;
+	$return['label'] = $label;
+	$return['description'] = $description;
+	$return['parent_id'] = $parent_id;
 	return returnArray(json_encode($return));
 }
 
