@@ -106,17 +106,21 @@ Aufschrei.Controller = (function(app) {
 
 	showTags = function(tags) {
 		var obj = $.parseJSON(tags);
-
+		var parentElement;
 		$.each(obj.result, function(index, value) {
-			all_tags.push(value);
-  			$('#tag_library').append('<li class="library_entry" id='+value.id+'>'+value.label+'</li>');
+			all_tags[value.id] = value;
+			if(!value.parent_id)
+	  			parentElement = $('#tag_library');
+			else
+				parentElement = $('#sublist'+value.parent_id);
+			parentElement.append('<li class="library_entry" id="' + value.id + '" title="' + value.description + '">' + value.label +
+						'<ul id="sublist' + value.id + '"></ul></li>');
 		});
 
 		$(".library_entry").click(function(e) {
 			var $target = $(e.target);
-			
-
-			addTagToTweet(e.target.id);
+			addOrRemoveTagToTweet(e.target.id);
+			return false;
 		});
 
 	},
@@ -172,26 +176,46 @@ Aufschrei.Controller = (function(app) {
 
 	},
 
-	addTagToTweet = function(tag_id) {
+	isTagEnabled = function(tag_id) {
+		var tagObject = all_tags[tag_id];
+		if(tagObject) {
+	    	    return($.inArray(tag_id, used_tags) != -1);
+		}
+	},
+
+	addOrRemoveTagToTweet = function(tag_id) {
+		if(isTagEnabled(tag_id))
+			removeTagFromTweet(tag_id);
+		else
+			addTagToTweet(tag_id);
+		displayButton();
+	},
+
+	addTagToTweet = function(tag_id)
+	{
 		$('#used_tags').fadeOut().html('').fadeIn();
 		if(working) return;
-		$.each(all_tags, function(index, value) {
-			if(value.id == tag_id) {
-				if($.inArray(value.id, used_tags) != -1) {
-					used_tags = jQuery.grep(used_tags, function(value) {
-  						return value != tag_id;
-					});
-					$('.item[id="'+tag_id+'"]').fadeOut().remove();
-					$('.library_entry[id="'+tag_id+'"]').removeClass('used');
-				} else {
-					used_tags.push(value.id);	
-					$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+value.label+'</span>');
-					$('.library_entry[id="'+tag_id+'"]').addClass('used');
-				}
-			}
-		});
-		displayButton();
-	}
+		var tagObject = all_tags[tag_id];
+		if(tagObject) {
+	    		used_tags.push(tag_id);	
+			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tagObject.label+'</span>');
+			$('.library_entry[id="'+tag_id+'"]').addClass('used');
+		}
+	},
+
+	removeTagFromTweet = function(tag_id)
+	{
+		$('#used_tags').fadeOut().html('').fadeIn();
+		if(working) return;
+		var tagObject = all_tags[tag_id];
+		if(tagObject) {
+	    		used_tags = jQuery.grep(used_tags, function(value) {
+			   return value != tag_id;
+			});
+			$('.item[id="'+tag_id+'"]').fadeOut().remove();
+			$('.library_entry[id="'+tag_id+'"]').removeClass('used');
+		}
+	} // No comma here, that's right!
 
 	return {
 		init : init

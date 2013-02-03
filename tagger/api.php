@@ -5,6 +5,9 @@ include_once("db_connect.php");
 if(isset($_POST['query'])) {
 		$query = $_POST['query'];
 		parseQuery($query);
+} else if(isset($_GET['query'])) {
+		$query = $_GET['query'];
+		parseQuery($query);
 } else {
 		returnError("NO QUERY");
 }
@@ -32,16 +35,17 @@ function getRandomTweet() {
 	$sql = mysql_query("SELECT id AS id, user_id AS user FROM statTweets ORDER BY RAND() LIMIT 1");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
-    	$return[] = $result;
+    	    $return[] = $result;
 	}
 	return returnArray(json_encode($return));
 }
 
 function getTags() {
-	$sql = mysql_query("SELECT id AS id, label AS label FROM statLabels");
+	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
-    	$return[] = $result;
+	    $encodedResult = array_map(utf8_encode, $result);
+	    $return[] = $encodedResult;
 	}
 	return returnArray(json_encode($return));
 }
