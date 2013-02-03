@@ -193,6 +193,9 @@ Aufschrei.Controller = (function(app) {
 
 	addTagToTweet = function(tag_id)
 	{
+		if(isTagEnabled(tag_id))
+			return;
+
 		$('#used_tags').fadeOut().html('').fadeIn();
 		if(working) return;
 		var tagObject = all_tags[tag_id];
@@ -200,11 +203,16 @@ Aufschrei.Controller = (function(app) {
 	    		used_tags.push(tag_id);	
 			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tagObject.label+'</span>');
 			$('.library_entry[id="'+tag_id+'"]').addClass('used');
+			if(tagObject.parent_id)
+				addTagToTweet(tagObject.parent_id);
 		}
 	},
 
 	removeTagFromTweet = function(tag_id)
 	{
+		if(!isTagEnabled(tag_id))
+			return;
+
 		$('#used_tags').fadeOut().html('').fadeIn();
 		if(working) return;
 		var tagObject = all_tags[tag_id];
@@ -214,6 +222,10 @@ Aufschrei.Controller = (function(app) {
 			});
 			$('.item[id="'+tag_id+'"]').fadeOut().remove();
 			$('.library_entry[id="'+tag_id+'"]').removeClass('used');
+
+			for(var key in all_tags)
+				if(all_tags[key].parent_id == tag_id)
+					removeTagFromTweet(key);
 		}
 	} // No comma here, that's right!
 
