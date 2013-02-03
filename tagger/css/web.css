@@ -39,7 +39,7 @@ nav {
 	float:left;
 }
 #tags #library ul {
-	width: 200px;
+	width: 200px; 
 	margin: 0;
 	padding: 0;
 }
@@ -52,10 +52,10 @@ nav {
 #tags #library ul li {
 	float: left;
 	list-style-type: none;
-	margin: 5px;
-	padding: 5px;
+	margin: 2px 5px 2px -25px;
+	padding: 3px 3px 3px 35px;
 
-	background: #DDD;
+	background: #AAA;
 	color: #333;
 
 	border-color: rgb(29,112,245);
@@ -69,12 +69,25 @@ nav {
 
 #tags #library ul li:hover {
 	cursor: pointer;
+	border-color: #33CC33;
 }
 
 #tags #library ul .used {
-	background: rgb(29,112,245);
+	background: #FFF url(img/check.png) no-repeat 2px 8px;
 }
 
+#tags #library li.unused li {
+	display: none;
+}
+
+#tags #library li:hover>.addButton {
+	visibility: visible;
+}
+/*
+#tags #library li.used>.addButton {
+	visibility: visible;
+}
+*/
 #tweet {
 	width:700px;
 	margin-left: auto;
@@ -224,7 +237,7 @@ nav {
 }
 
 #tweet #languages ul .used {
-	background: rgb(29,112,245);
+	background-color: rgb(29,112,245);
 }
 
 #tweet #languages .other {
@@ -256,12 +269,10 @@ nav {
 }
 
 .addButton {
+	visibility: hidden;
     float:right;
     background: white;
-    padding-top:2px;
-    padding-bottom:2px;
-    padding-left:8px;
-    padding-right:8px;
+    padding: 1px 5px;
 
     border: 2px solid rgb(29,112,245);
     -moz-border-radius:  3px;  

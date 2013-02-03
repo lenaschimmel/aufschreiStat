@@ -129,8 +129,8 @@ Aufschrei.Controller = (function(app) {
 
 		var buttonId = "addSubtagTo" + tag.id;
 
-		parentElement.append('<li class="library_entry" id="' + tag.id + '" title="' + tag.description + '">' + tag.label +
-					'<span class="addButton" id="'+ buttonId  +'" title="Click to add subtag">+</span><ul id="sublist' + tag.id + '"></ul></li>');
+		parentElement.append('<li class="library_entry unused" id="' + tag.id + '" title="' + tag.description + '">' + tag.label +
+					'<span class="addButton" id="'+ buttonId  +'" title="Click to add subtag">new</span><ul id="sublist' + tag.id + '"></ul></li>');
 
 		$('#'+buttonId).click(function(target) {
 			var label = prompt("Name für den neuen Tag");
@@ -151,6 +151,7 @@ Aufschrei.Controller = (function(app) {
 	createTagFromServer = function(json) {
 		var answer = $.parseJSON(json);
 		createTag(answer.result);
+		addTagToTweet(answer.result.id);
 	},
 
 	showTweet = function(html) {
@@ -164,7 +165,6 @@ Aufschrei.Controller = (function(app) {
 		}
 
 		displayTweet(tweet_text, user_screenname, time);
-		
 		working = false;
 	},
 
@@ -230,7 +230,7 @@ Aufschrei.Controller = (function(app) {
 		if(tagObject) {
 	    		used_tags.push(tag_id);	
 			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tagObject.label+'</span>');
-			$('.library_entry[id="'+tag_id+'"]').addClass('used');
+			$('.library_entry[id="'+tag_id+'"]').addClass('used').removeClass('unused');
 			if(tagObject.parent_id)
 				addTagToTweet(tagObject.parent_id);
 		}
@@ -249,7 +249,7 @@ Aufschrei.Controller = (function(app) {
 			   return value != tag_id;
 			});
 			$('.item[id="'+tag_id+'"]').fadeOut().remove();
-			$('.library_entry[id="'+tag_id+'"]').removeClass('used');
+			$('.library_entry[id="'+tag_id+'"]').removeClass('used').addClass('unused');
 
 			for(var key in all_tags)
 				if(all_tags[key].parent_id == tag_id)
