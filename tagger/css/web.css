@@ -53,9 +53,6 @@ nav {
 	float: left;
 	list-style-type: none;
 	margin: 5px;
-	padding: 5px 0 5px 0;
-
-	margin-bottom: 5px;
 	padding: 5px;
 
 	background: #DDD;
@@ -79,7 +76,7 @@ nav {
 }
 
 #tweet {
-	width:500px;
+	width:700px;
 	margin-left: auto;
   	margin-right: auto;
 }
@@ -93,10 +90,10 @@ nav {
 	display:block;
     margin:0px auto;
 
-    background: rgb(29,112,245);
+    background: rgb(61,181,40);
 
 
-	border-color: rgb(29,112,245);
+	border-color: rgb(61,181,40);
     border-style: solid;
    	border-width: 2px;
 
@@ -114,7 +111,10 @@ nav {
 }
 
 #tweet #content{
+	width: 500px;
 
+	margin-left: auto;
+  	margin-right: auto;
 	background-color: #DDD;
 
 	border-color: #DF013A;
@@ -170,8 +170,69 @@ nav {
   	background-image: url(img/loader.gif);
 	background-repeat: no-repeat;
 }
+
+#tweet #languages {
+}
+
+#tweet #languages ul {
+	width: 500px;
+	margin-left: auto;
+  	margin-right: auto;
+	padding: 0;
+}
+
+#tweet #languages ul li {
+	float: left;
+	list-style-type: none;
+	margin-right: 5px;
+	padding:3px;
+	padding-left: 27px;
+
+	background-color: #DDD;
+
+	border-color: rgb(29,112,245);
+    border-style: solid;
+   	border-width: 2px;
+
+    -moz-border-radius:  3px;  
+   	-webkit-border-radius: 3px;  
+    border-radius: 3px;
+
+	color: #333;
+}
+
+#tweet #languages ul li:hover {
+	cursor: pointer;
+}
+
+
+
+#tweet #languages .de {
+	background: url(img/de.png) no-repeat 3px #DDD;
+}
+
+#tweet #languages .en {
+	background: url(img/en.png) no-repeat 3px #DDD;
+}
+
+#tweet #languages .fr {
+	background: url(img/fr.png) no-repeat 3px #DDD;
+}
+
+#tweet #languages .it {
+	background: url(img/it.png) no-repeat 3px #DDD;
+}
+
+#tweet #languages ul .used {
+	background: rgb(29,112,245);
+}
+
+#tweet #languages .other {
+	padding-left:3px;
+}
+
 #tweet #usedtags {
-	margin-top: 5px;
+	clear: both;
 }
 
 #tweet #usedtags .item {

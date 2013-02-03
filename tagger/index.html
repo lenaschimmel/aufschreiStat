@@ -5,7 +5,6 @@
 	<link rel="stylesheet" type="text/css" href="css/web.css">
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
 	<script src="js/libs/jquery-1.7.2.min.js"></script>
-    <script src="js/libs/jcanvas.min.js"></script>
     <script src="js/Aufschrei.js"></script>
     <script src="js/Controller.js"></script>
 </head>
@@ -13,7 +12,7 @@
 
 <header>
 <h1>Twag: tag a tweet<h1>
-<h2>Describe this tweet by selecting tags from the left.</h2>
+<h2>Describe this tweet by selecting tags from the left. Select the language the tweet is written in.</h2>
 </header>
 
 <nav>
@@ -36,6 +35,16 @@
 			<div id="spinner"></div>
 			<div id="user_name"></div>
 			<div id="text"></div>
+		</div>
+
+		<div id="languages">
+			<ul>
+				<li class="de lang" lang="de">German</li>
+				<li class="en lang" lang="en">English</li>
+				<li class="fr lang" lang="fr">French</li>
+				<li class="it lang" lang="it">Italian</li>
+				<li class="other lang" lang="other">Another Language</li>
+			</ul>
 		</div>
 
 		<div id="usedtags">
