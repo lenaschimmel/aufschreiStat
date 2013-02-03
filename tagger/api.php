@@ -29,7 +29,7 @@ function parseQuery($query) {
 
 
 function getRandomTweet() {
-	$sql = mysql_query("SELECT _id AS id, _user AS user FROM tweets ORDER BY RAND() LIMIT 1");
+	$sql = mysql_query("SELECT id AS id, user_id AS user FROM statTweets ORDER BY RAND() LIMIT 1");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
     	$return[] = $result;
@@ -38,7 +38,7 @@ function getRandomTweet() {
 }
 
 function getTags() {
-	$sql = mysql_query("SELECT _id AS id, _label AS label FROM labels");
+	$sql = mysql_query("SELECT id AS id, label AS label FROM statLabels");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
     	$return[] = $result;
@@ -52,19 +52,19 @@ function getHtmlForTweet($url) {
 
 function updatetweet() {
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_tweet = mysql_query("UPDATE tweets SET _tagged=_tagged+1 WHERE _id='$tweet'");
+	$update_tweet = mysql_query("UPDATE statTweets SET tagged=tagged+1 WHERE id='$tweet'");
 }
 
 function updatetag() {
 	$id = mysql_real_escape_string($_POST['id']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_label = mysql_query("INSERT INTO tweets_to_labels SET _label_id='$id', _tweet_id='$tweet', _count=1 ON DUPLICATE KEY UPDATE _count=_count+1");
+	$update_label = mysql_query("INSERT INTO statTweetsToLabels SET label_id='$id', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
 }
 
 function updatelang() {
 	$lang = mysql_real_escape_string($_POST['lang']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_lang = mysql_query("INSERT INTO tweets_to_langs SET _lang='$lang', _tweet_id='$tweet', _count=1 ON DUPLICATE KEY UPDATE _count=_count+1");
+	$update_lang = mysql_query("INSERT INTO statTweetsToLangs SET lang='$lang', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
 }
 
 

@@ -1,18 +1,32 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.6-rc1
+-- version 2.11.8.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 02. Feb 2013 um 00:00
--- Server Version: 5.5.29-1~dotdeb.0-log
--- PHP-Version: 5.4.11-1~dotdeb.0
+-- Erstellungszeit: 03. Februar 2013 um 01:58
+-- Server Version: 5.1.63
+-- PHP-Version: 5.3.6-13ubuntu3.7
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 --
--- Datenbank: `rbtest`
+-- Datenbank: `aufschreistat`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `statLabels`
+--
+
+CREATE TABLE IF NOT EXISTS `statLabels` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `label` varchar(200) NOT NULL DEFAULT '[unknown]',
+  `description` text NOT NULL,
+  `parent_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -43,10 +57,37 @@ CREATE TABLE IF NOT EXISTS `statTweets` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `in_reply_to_status_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
+  `tagged` int(11) NOT NULL DEFAULT '0' COMMENT 'Wie oft wurde dies getaggt?',
   PRIMARY KEY (`id`),
   KEY `coordinates_lat` (`coordinates_lat`,`coordinates_lon`,`created_at`,`in_reply_to_status_id`,`user_id`),
   FULLTEXT KEY `text` (`text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `statTweetsToLabels`
+--
+
+CREATE TABLE IF NOT EXISTS `statTweetsToLabels` (
+  `label_id` bigint(20) NOT NULL,
+  `tweet_id` bigint(20) NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`label_id`,`tweet_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `statTweetsToLangs`
+--
+
+CREATE TABLE IF NOT EXISTS `statTweetsToLangs` (
+  `lang` varchar(10) NOT NULL,
+  `tweet_id` bigint(20) NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`lang`,`tweet_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
