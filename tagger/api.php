@@ -1,6 +1,10 @@
 <?php
 
-include_once("db_connect.php");
+require_once("config.php");
+
+mysql_connect( $config["mysqlhost"], $config["mysqluser"], $config["mysqlpassword"]);
+mysql_set_charset($config["mysqlcharset"]);
+mysql_select_db($config["mysqldatabase"]);
 
 if(isset($_POST['query'])) {
 		$query = $_POST['query'];
@@ -86,7 +90,6 @@ function updatelang() {
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
 	$update_lang = mysql_query("INSERT INTO statTweetsToLangs SET lang='$lang', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
 }
-
 
 function returnArray($result) {
 	print "{\"status\": \"ok\", \"result\": ".$result."}";
