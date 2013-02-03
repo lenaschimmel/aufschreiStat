@@ -128,14 +128,14 @@ Aufschrei.Controller = (function(app) {
 	showTweet = function(html) {
 		var tweet_text = $(".js-tweet-text.tweet-text", html).html();
 		var user_screenname = $(".username.js-action-profile-name", html).html();
-	
+		var time = $("span.metadata span", html).html();
 		if(tweet_text == null || user_screenname == null) {
 			console.log("the tweet is a lie!");
 			getRandomTweetFromDatabase();
 			return;
 		}
 
-		displayTweet(tweet_text, user_screenname);
+		displayTweet(tweet_text, user_screenname, time);
 		
 		working = false;
 	},
@@ -169,11 +169,11 @@ Aufschrei.Controller = (function(app) {
 		}
 	},
 
-	displayTweet = function(text, username) {
+	displayTweet = function(text, username, time) {
 		$('#spinner').hide();
 		$('#user_name').html(username);
 		$('#text').html(text);
-
+		$('#time').html(time);
 	},
 
 	isTagEnabled = function(tag_id) {
