@@ -2,6 +2,6 @@ bin
 *.properties
 aufschreiStat.jar
 nohup.out
-
+tagger/config.php
 
 .DS_Store
