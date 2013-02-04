@@ -2,7 +2,7 @@
 
 require_once("config.php");
 
-mysql_connect( $config["mysqlhost"], $config["mysqluser"], $config["mysqlpassword"]);
+mysql_connect( $config["mysqlhost"].":".$config["mysqlport"], $config["mysqluser"], $config["mysqlpassword"]);
 mysql_set_charset($config["mysqlcharset"]);
 mysql_select_db($config["mysqldatabase"]);
 
@@ -47,11 +47,11 @@ function getRandomTweet() {
 }
 
 function getTags() {
-	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels");
+	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels ORDER BY parent_id, label ASC");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
-	    $encodedResult = array_map(utf8_encode, $result);
-	    $return[] = $encodedResult;
+	    //$encodedResult = array_map(utf8_encode, $result);
+	    $return[] = $result;
 	}
 	return returnArray(json_encode($return));
 }
@@ -82,13 +82,13 @@ function updatetweet() {
 function updatetag() {
 	$id = mysql_real_escape_string($_POST['id']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_label = mysql_query("INSERT INTO statTweetsToLabels SET label_id='$id', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
+	$update_label = mysql_query("INSERT INTO statTweets_to_labels SET label_id='$id', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
 }
 
 function updatelang() {
 	$lang = mysql_real_escape_string($_POST['lang']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_lang = mysql_query("INSERT INTO statTweetsToLangs SET lang='$lang', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
+	$update_lang = mysql_query("INSERT INTO statTweets_to_langs SET lang='$lang', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
 }
 
 function returnArray($result) {

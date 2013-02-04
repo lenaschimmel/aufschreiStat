@@ -1,6 +1,7 @@
 Aufschrei.Controller = (function(app) {
 
 	var last_tweets,
+	tags,
 	all_tags,
 	used_tags,
 	current_tweet = "-1",
@@ -34,6 +35,7 @@ Aufschrei.Controller = (function(app) {
 		last_tweets = new Array();
 		all_tags = new Array();
 		used_tags = new Array();
+		tags = new Array();
 	},
 
 	getRandomTweetFromDatabase = function() {
@@ -104,18 +106,42 @@ Aufschrei.Controller = (function(app) {
 		});
 	},
 
-	showTags = function(tags) {
-		var obj = $.parseJSON(tags);
+	showTags = function(tags_json) {
+		var obj = $.parseJSON(tags_json);
+		tags = obj;
+		$.each(tags.result, function(index, value) {
+			if(value.parent_id == 0) {
+				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+'>'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
+				$('#library li[id='+value.id+'] > .label').addClass('child');
+			} else {
+				var node = $('#library li[id='+value.parent_id+']');
+				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+'>'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
+				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').addClass('child');
+				$('#library li[id='+value.parent_id+'] > li[id='+value.id+']').addClass('hidden');
+				$('#library li[id='+value.parent_id+'] > .label').removeClass('child');	
+				$('#library li[id='+value.parent_id+'] > .label').addClass('parent');	
+			}
+			$('#library li[id='+value.id+'] > .label').click(function(e) {
+				if($(e.target).hasClass('parent')) {
+					var node = $('#library li[id='+$(e.target).attr("id")+']');
+					node.toggleClass('closed');
+					node.children('li').toggleClass('hidden');
+				} else {
+					if(working) return;
+					$(e.target).toggleClass('used');
+					addOrRemoveTagToTweet($(e.target).attr("id"));
+				}
 
-		$.each(obj.result, function(index, value) {
-			createTag(value);
+			});
 		});
 
+		/**
 		$(".library_entry").click(function(e) {
 			var $target = $(e.target);
 			addOrRemoveTagToTweet(e.target.id);
 			return false;
 		});
+		*/
 
 	},
 
@@ -176,13 +202,17 @@ Aufschrei.Controller = (function(app) {
 	},
 
 	clear = function() {
+		console.log('clear');
 		$('#user_name').html('');
+		$('#time').html('');
 		$('#text').html('');
 		$('#spinner').fadeIn();
 		$('.lang').removeClass('used');
+		$('.label').removeClass('used');
 		$('#usedtags').html('');
 
-		$('.library_entry').removeClass('used');
+		$('#library li').addClass('closed');
+		$('#library li').not('[parent="0"]').addClass('hidden');
 		used_tags = new Array();
 
 		current_tweet = "-1";
@@ -199,63 +229,70 @@ Aufschrei.Controller = (function(app) {
 
 	displayTweet = function(text, username, time) {
 		$('#spinner').hide();
-		$('#user_name').html(username);
+		$('#user_name').html(username.replace('@',''));
 		$('#text').html(text);
 		$('#time').html(time);
 	},
 
 	isTagEnabled = function(tag_id) {
 		var tagObject = all_tags[tag_id];
-		if(tagObject) {
+		//if(tagObject) {
 	    	    return($.inArray(tag_id, used_tags) != -1);
-		}
+		//}
 	},
 
 	addOrRemoveTagToTweet = function(tag_id) {
-		if(isTagEnabled(tag_id))
+		if(working) return;
+
+		if(isTagEnabled(tag_id)) {
 			removeTagFromTweet(tag_id);
-		else
+		} else {
 			addTagToTweet(tag_id);
+		}
 		displayButton();
 	},
 
 	addTagToTweet = function(tag_id)
 	{
+		$.each(tags.result, function(index, value) {
+			if(value.id == tag_id) {
+				tag = value;
+			}
+		});
+
 		if(isTagEnabled(tag_id))
 			return;
 
 		$('#used_tags').fadeOut().html('').fadeIn();
-		if(working) return;
-		var tagObject = all_tags[tag_id];
-		if(tagObject) {
+		//var tagObject = all_tags[tag_id];
+		//if(tagObject) {
 	    		used_tags.push(tag_id);	
-			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tagObject.label+'</span>');
+			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tag.label+'</span>');
 			$('.library_entry[id="'+tag_id+'"]').addClass('used').removeClass('unused');
-			if(tagObject.parent_id)
-				addTagToTweet(tagObject.parent_id);
-		}
+			//if(tagObject.parent_id)
+				//addTagToTweet(tagObject.parent_id);
+		//}
 	},
 
 	removeTagFromTweet = function(tag_id)
 	{
+
 		if(!isTagEnabled(tag_id))
 			return;
 
 		$('#used_tags').fadeOut().html('').fadeIn();
-		if(working) return;
-		var tagObject = all_tags[tag_id];
-		if(tagObject) {
-	    		used_tags = jQuery.grep(used_tags, function(value) {
+		
+		//var tagObject = all_tags[tag_id];
+		//if(tagObject) {
+	    	used_tags = jQuery.grep(used_tags, function(value) {
 			   return value != tag_id;
 			});
 			$('.item[id="'+tag_id+'"]').fadeOut().remove();
 			$('.library_entry[id="'+tag_id+'"]').removeClass('used').addClass('unused');
 
-			for(var key in all_tags)
-				if(all_tags[key].parent_id == tag_id)
-					removeTagFromTweet(key);
-		}
-	} // No comma here, that's right!
+			
+		//}
+	}// No comma here, that's right!
 
 	return {
 		init : init

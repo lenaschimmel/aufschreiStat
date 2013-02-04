@@ -35,11 +35,13 @@ nav {
 }
 
 #tags {
-	margin-left: 50px;
-	float:left;
+	position: absolute;
+	top:70px;
+	left:50px;
 }
+
 #tags #library ul {
-	width: 200px; 
+	width: 300px; 
 	margin: 0;
 	padding: 0;
 }
@@ -50,30 +52,46 @@ nav {
 
 
 #tags #library ul li {
-	float: left;
 	list-style-type: none;
 	margin: 2px 5px 2px -25px;
 	padding: 3px 3px 3px 35px;
 
-	background: #AAA;
-	color: #333;
+	color: #DDD;
 
-	border-color: rgb(29,112,245);
-    border-style: solid;
-   	border-width: 2px;
-
-    -moz-border-radius:  5px;  
-   	-webkit-border-radius: 5px;  
-    border-radius: 5px;
+	
 }
 
-#tags #library ul li:hover {
+#tags #library ul li .parent{
+	background: url(img/tags_open.png) no-repeat left;
+	height: 27px;
+	padding-left: 27px;
+	line-height: 27px;
+	font-size: 18px;
+	
+}
+
+#tags #library ul li .child{
+	background: url(img/tag_open.png) no-repeat left;
+	height: 27px;
+	padding-left: 27px;
+	line-height: 27px;
+	font-size: 16px;
+}
+
+#tags #library ul li .used{
+	color: rgb(29,112,245);
+}
+
+#tags #library ul li .label:hover {
 	cursor: pointer;
-	border-color: #33CC33;
 }
 
 #tags #library ul .used {
-	background: #FFF url(img/check.png) no-repeat 2px 8px;
+	/**background: #FFF url(img/check.png) no-repeat 2px 8px;*/
+}
+
+#tags #library li .hidden{
+	display: none;
 }
 
 #tags #library li.unused li {
@@ -83,6 +101,25 @@ nav {
 #tags #library li:hover>.addButton {
 	visibility: visible;
 }
+
+#tags #library .addtag {
+	margin-left: 10px;
+	padding: 3px;
+	background-color: rgb(122,191,103);
+
+    -moz-border-radius:  3px;  
+   	-webkit-border-radius: 3px;  
+    border-radius: 3px;
+
+	color: #333;
+
+	font-size: 12px;
+}
+
+#tags #library .addtag:hover {
+	cursor: pointer;
+}
+
 /*
 #tags #library li.used>.addButton {
 	visibility: visible;
@@ -252,7 +289,7 @@ nav {
 	display: block;
 	float: left;
 
-	margin: 3px;
+	margin: 7px;
 
 	padding: 2px;
 
