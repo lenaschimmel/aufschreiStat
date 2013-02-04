@@ -3,11 +3,13 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link rel="stylesheet" type="text/css" href="css/web.css">
+	<link rel="stylesheet" type="text/css" href="css/tipTip.css">
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
 	<script src="js/libs/jquery-1.7.2.min.js"></script>
-	<title>#aufschreistat Tagger</title>
+	<script src="js/libs/jquery.tipTip.minified.js"></script>
     <script src="js/Aufschrei.js"></script>
     <script src="js/Controller.js"></script>
+	<title>#aufschreistat Tagger</title>
 </head>
 <body>
 
@@ -17,14 +19,21 @@
 </header>
 
 <nav>
-
 </nav>
 
 <section>
 	<div id="tags">
+		<h1>Tags</h1>
 		<div id="library">
-			<h1>Tags</h1>
-			<ul id="tag_library">
+			<div id="newtag">
+				<div id="close">close</div>
+				<h2>Add new tag</h2>
+				<div id="breadcrumbs">TAG/TAG1/TAG2</div>
+				<span class="dialog_label">Tag (min. 3 characters)</span><input class="field text label" type="text"  placeholder="tag"/>
+				<span class="dialog_label">Description</span><input class="field text description" type="text"  placeholder="describe the tag"/>
+				<input class="field button savetodb disabled" type="submit"  value="save"/>
+			</div>
+			<ul id="root">
 			</ul>
 		</div>
 	</div>
