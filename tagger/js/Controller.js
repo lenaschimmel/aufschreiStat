@@ -29,6 +29,29 @@ Aufschrei.Controller = (function(app) {
 		$('.lang').click(function(e) {
 			setLanguage($(e.target).attr('lang'));
 		});
+
+		$('#newtag').hide();
+
+		$('#newtag .field.text.label').keyup(function() {
+			if($('#newtag .field.text.label').val().length > 2) {
+				$('#newtag .field.button.savetodb.disabled').removeClass('disabled');
+				$('#newtag .field.button.savetodb').addClass('enabled');
+			} else {
+				$('#newtag .field.button.savetodb.enabled').removeClass('enabled');
+				$('#newtag .field.button.savetodb').addClass('disabled');
+			}
+		});
+
+		$('#newtag .field.button.savetodb').click(function(e) {
+			if($(e.target).hasClass('enabled')) {
+				saveNewTagToDatabase($('#newtag .field.text.label').val(), $('#newtag .field.text.description').val(), $('#newtag').attr('parent_id'));
+			}
+		});
+
+		$('#newtag #close').click(function(e) {
+			if(working) return;
+			$('#newtag').fadeOut();
+		});
 	},
 
 	initMemebers = function() {
@@ -109,14 +132,28 @@ Aufschrei.Controller = (function(app) {
 	showTags = function(tags_json) {
 		var obj = $.parseJSON(tags_json);
 		tags = obj;
+		buildTagTree();
+
+		/**
+		$(".library_entry").click(function(e) {
+			var $target = $(e.target);
+			addOrRemoveTagToTweet(e.target.id);
+			return false;
+		});
+		*/
+
+	},
+
+	buildTagTree = function() {
+		$('#library > #root').html('');
 		$.each(tags.result, function(index, value) {
 			if(value.parent_id == 0) {
-				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
+				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">add new tag</span></li>');
 				$('#library li[id='+value.id+'] > .label').addClass('child');
 				$('#library li[id='+value.id+'] > .label').tipTip();
 			} else {
 				var node = $('#library li[id='+value.parent_id+']');
-				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
+				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">add new tag</span></li>');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').addClass('child');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').tipTip();
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+']').addClass('hidden');
@@ -125,6 +162,11 @@ Aufschrei.Controller = (function(app) {
 				$('#library li[id='+value.parent_id+'] > .label').attr('title', 'Click to open/close tag category');
 				$('#library li[id='+value.parent_id+'] > .label').tipTip();
 			}
+
+			$('#library li[id='+value.id+'] > .addtag').click(function(e) {
+				shownewTagDialog($(e.target).attr("id"));
+			});
+
 			$('#library li[id='+value.id+'] > .label').click(function(e) {
 				if($(e.target).hasClass('parent')) {
 					var node = $('#library li[id='+$(e.target).attr("id")+']');
@@ -138,16 +180,7 @@ Aufschrei.Controller = (function(app) {
 
 			});
 		});
-
-		/**
-		$(".library_entry").click(function(e) {
-			var $target = $(e.target);
-			addOrRemoveTagToTweet(e.target.id);
-			return false;
-		});
-		*/
-
-	},
+	}
 
 	createTag = function(tag) {
 		var parentElement;
@@ -169,13 +202,43 @@ Aufschrei.Controller = (function(app) {
 		});
 	},
 
+	saveNewTagToDatabase = function(label, description, parent_id) {
+		if(parent != '') {
+			$.ajax({
+  				type: "POST",
+  				url: api_url,
+  				data: {query: "createtag", label: label, description : description, parent_id : parent_id},
+  				success: processNewTagFromDatabase
+		});
+		}
+	}
+
 	createTagInDatabase = function(label, description, parent_id) {
+		working = true;
 		$.ajax({
   				type: "POST",
   				url: api_url,
   				data: {query: "createtag", label: label, description : description, parent_id : parent_id},
   				success: createTagFromServer
 		});
+	},
+
+	processNewTagFromDatabase = function(json) {
+		working = false;
+		var obj = $.parseJSON(json);
+		if(obj.status == "ok") {
+			tags.result.push(obj.result);
+			console.log(tags)
+			addOrRemoveTagToTweet(obj.result.id);
+			$('#newtag').attr('parent_id', '');
+			$('#newtag > #breadcrumbs').html('');
+			$('#newtag').fadeOut();
+		} else {
+			$('#newtag').attr('parent_id', '');
+			$('#newtag > #breadcrumbs').html('');
+			$('#newtag').fadeOut();
+		}
+		buildTagTree();
 	},
 
 	createTagFromServer = function(json) {
@@ -217,6 +280,12 @@ Aufschrei.Controller = (function(app) {
 
 		$('#library li').addClass('closed');
 		$('#library li').not('[parent="0"]').addClass('hidden');
+
+
+		$('#newtag').attr('parent_id', '');
+		$('#newtag > #breadcrumbs').html('');
+		$('#newtag').fadeOut();
+
 		used_tags = new Array();
 
 		current_tweet = "-1";
@@ -239,7 +308,7 @@ Aufschrei.Controller = (function(app) {
 	},
 
 	isTagEnabled = function(tag_id) {
-		var tagObject = all_tags[tag_id];
+		//var tagObject = all_tags[tag_id];
 		//if(tagObject) {
 	    	    return($.inArray(tag_id, used_tags) != -1);
 		//}
@@ -264,10 +333,10 @@ Aufschrei.Controller = (function(app) {
 			}
 		});
 
-		if(isTagEnabled(tag_id))
-			return;
+		//if(isTagEnabled(tag_id))
+		//	return;
 
-		$('#used_tags').fadeOut().html('').fadeIn();
+		//$('#used_tags').fadeOut().html('').fadeIn();
 		//var tagObject = all_tags[tag_id];
 		//if(tagObject) {
 	    		used_tags.push(tag_id);	
@@ -278,13 +347,25 @@ Aufschrei.Controller = (function(app) {
 		//}
 	},
 
+	shownewTagDialog = function(parent_id) {
+		var breadcrumbs = "";
+		for(var id=parent_id;id>0;) {
+			breadcrumbs = "/" + ($('#library li[id='+id+'] > .label').html()) + breadcrumbs;
+			id = $('#library li[id='+id+']').attr('parent');
+		}
+		$('#newtag > #breadcrumbs').html(breadcrumbs);
+		$('#newtag').attr('parent_id', parent_id);
+		$('#newtag').fadeIn();
+		$('#newtag').scrollTop();
+	},
+
 	removeTagFromTweet = function(tag_id)
 	{
 
 		if(!isTagEnabled(tag_id))
 			return;
 
-		$('#used_tags').fadeOut().html('').fadeIn();
+		//$('#used_tags').fadeOut().html('').fadeIn();
 		
 		//var tagObject = all_tags[tag_id];
 		//if(tagObject) {

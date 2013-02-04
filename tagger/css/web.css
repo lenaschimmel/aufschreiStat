@@ -34,20 +34,117 @@ nav {
 	background: rgba(33,33,33,0.9);
 }
 
+#tags h1 {
+	color: #DDD;
+}
+
 #tags {
 	position: absolute;
 	top:70px;
 	left:50px;
 }
 
+#tags #library #root {
+	height:600px; 
+	overflow-y: scroll;
+}
+
+#tags #library #newtag {
+	width: 200px;
+
+	margin-left: auto;
+  	margin-right: auto;
+
+	background-color: #DDD;
+
+	border-color: rgb(122,191,103);
+    border-style: solid;
+   	border-width: 2px;
+
+    -moz-border-radius:  3px;  
+   	-webkit-border-radius: 3px;  
+    border-radius: 3px;
+
+    padding: 3px;
+
+	color: #333;
+
+	font-size: 12px;;
+
+}
+
+#tags #library #newtag #close {
+	width: 90%;
+	text-align: right;
+	text-decoration: underline;
+}
+
+#tags #library #newtag #close:hover {
+	cursor: pointer;
+}
+
+#tags #library #newtag h2 {
+	text-align: center;
+}
+
+#tags #library #newtag #breadcrumbs {
+	text-align:center;
+}
+
+#tags #library #newtag .dialog_label {
+	display:block;
+	margin-top: 5px;
+	font-style: italic;
+	text-align: center;
+}
+
+#tags #library #newtag input {
+	width: 90%;
+	margin-left: auto;
+  	margin-right: auto;
+	display:block;
+	margin-bottom: 5px;
+}
+
+#tags #library #newtag .button {
+	
+
+	display:block;
+	background-color: rgb(122,191,103);
+
+border-color: rgb(122,191,103);
+    border-style: solid;
+   	border-width: 2px;
+
+	 -moz-border-radius:  3px;  
+   	-webkit-border-radius: 3px;  
+    border-radius: 3px;
+
+	color: #333;
+}
+
+#tags #library #newtag .button:hover {
+	cursor: pointer;
+}
+
+#tags #library #newtag .enabled {
+	background-color: rgb(122,191,103);
+	border-color: rgb(122,191,103);
+}
+
+#tags #library #newtag .disabled {
+	background-color: rgb(150,150,150);
+	border-color: rgb(150,150,150);
+}
+
+#tags #library #newtag .disabled:hover {
+	cursor: wait;
+}
+
 #tags #library ul {
 	width: 300px; 
 	margin: 0;
 	padding: 0;
-}
-
-#tags #library h1 {
-	color: #DDD;
 }
 
 
@@ -108,7 +205,7 @@ nav {
 	padding: 3px;
 	background-color: rgb(122,191,103);
 
-    -moz-border-radius:  3px;  
+	 -moz-border-radius:  3px;  
    	-webkit-border-radius: 3px;  
     border-radius: 3px;
 
@@ -141,10 +238,10 @@ nav {
 	display:block;
     margin:0px auto;
 
-    background: rgb(61,181,40);
+    background: rgb(122,191,103);
 
 
-	border-color: rgb(61,181,40);
+	border-color: rgb(122,191,103);
     border-style: solid;
    	border-width: 2px;
 
@@ -153,7 +250,7 @@ nav {
     border-radius: 5px;
 
     font-size: 1em;
-	color: #DDD;
+	color: #333;
 }
 
 #tweet #nav .button:hover {

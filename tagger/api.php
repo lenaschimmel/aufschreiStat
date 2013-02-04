@@ -23,7 +23,7 @@ function parseQuery($query) {
 		getHtmlForTweet($_POST['url']);
 	} else if($query == "tags") {
 		getTags();
-	} else if($query == "createtag") {
+	} else if($query == "createtag" && isset($_POST['description']) && isset($_POST['parent_id'])){
 		createTag();
 	} else if($query == "updatetweet" && isset($_POST['tweet'])) {
 		updatetweet();
@@ -47,7 +47,7 @@ function getRandomTweet() {
 }
 
 function getTags() {
-	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels ORDER BY parent_id, label ASC");
+	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels WHERE reviewed = 1 ORDER BY parent_id, label ASC");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
 	    //$encodedResult = array_map(utf8_encode, $result);
