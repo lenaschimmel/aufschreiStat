@@ -111,15 +111,19 @@ Aufschrei.Controller = (function(app) {
 		tags = obj;
 		$.each(tags.result, function(index, value) {
 			if(value.parent_id == 0) {
-				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+'>'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
+				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
 				$('#library li[id='+value.id+'] > .label').addClass('child');
+				$('#library li[id='+value.id+'] > .label').tipTip();
 			} else {
 				var node = $('#library li[id='+value.parent_id+']');
-				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+'>'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
+				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'">add new tag</span></li>');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').addClass('child');
+				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').tipTip();
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+']').addClass('hidden');
 				$('#library li[id='+value.parent_id+'] > .label').removeClass('child');	
 				$('#library li[id='+value.parent_id+'] > .label').addClass('parent');	
+				$('#library li[id='+value.parent_id+'] > .label').attr('title', 'Click to open/close tag category');
+				$('#library li[id='+value.parent_id+'] > .label').tipTip();
 			}
 			$('#library li[id='+value.id+'] > .label').click(function(e) {
 				if($(e.target).hasClass('parent')) {
