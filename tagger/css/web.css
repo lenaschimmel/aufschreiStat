@@ -6,11 +6,10 @@ body {
 }
 
 header {
-	width:800px;
-	margin-top: 70px;
-	margin-left: auto;
-  	margin-right: auto;
-
+	top: 20px;
+	left: 400px;
+  	right: 0;
+	position: absolute;
   	text-align: center;
 }
 
@@ -23,82 +22,81 @@ header h2 {
 	color: #DDD;
 }
 
-nav {
-	position: absolute;
-	top:0px;
-	left:0px;
-
-	width:100%;
-	height:50px;
-
-	background: rgba(33,33,33,0.9);
-}
-
 #tags h1 {
 	color: #DDD;
 }
 
 #tags {
 	position: absolute;
-	top:70px;
-	left:50px;
+	top: 0;
+	left: 40px;
+	bottom: 0;
+	width: 400px;
+}
+
+#tags #library {
+	width: 100%;
+	height: 100%;
 }
 
 #tags #library #root {
-	height:600px; 
-	overflow-y: scroll;
+	height: 100%;
+	width: 100%
+	overflow-y: auto;
 }
 
-#tags #library #newtag {
-	width: 200px;
+#newtag {
+	position: absolute;
+	width: 300px;
+	top: 50%;
+	left: 50%;
+}
 
-	margin-left: auto;
-  	margin-right: auto;
+#moveWrapper {
+	position: relative;
+	left: -150px;
+	top: -100px;
+	padding: 25px;
 
 	background-color: #DDD;
-
-	border-color: rgb(122,191,103);
-    border-style: solid;
-   	border-width: 2px;
-
-    -moz-border-radius:  3px;  
-   	-webkit-border-radius: 3px;  
-    border-radius: 3px;
-
-    padding: 3px;
-
 	color: #333;
 
-	font-size: 12px;;
+	border-color: rgb(122,191,103);
+	border-style: solid;
+   	border-width: 2px;
+	-moz-border-radius:  3px;  
+   	-webkit-border-radius: 3px;  
+        border-radius: 3px;
 
+	font-size: 12px;
 }
 
-#tags #library #newtag #close {
+#newtag #close {
 	width: 90%;
 	text-align: right;
 	text-decoration: underline;
 }
 
-#tags #library #newtag #close:hover {
+#newtag #close:hover {
 	cursor: pointer;
 }
 
-#tags #library #newtag h2 {
+#newtag h2 {
 	text-align: center;
 }
 
-#tags #library #newtag #breadcrumbs {
+#newtag #breadcrumbs {
 	text-align:center;
 }
 
-#tags #library #newtag .dialog_label {
+#newtag .dialog_label {
 	display:block;
 	margin-top: 5px;
 	font-style: italic;
 	text-align: center;
 }
 
-#tags #library #newtag input {
+#newtag input {
 	width: 90%;
 	margin-left: auto;
   	margin-right: auto;
@@ -106,56 +104,52 @@ nav {
 	margin-bottom: 5px;
 }
 
-#tags #library #newtag .button {
-	
+#newtag .button {
 
 	display:block;
 	background-color: rgb(122,191,103);
 
-border-color: rgb(122,191,103);
-    border-style: solid;
+	border-color: rgb(122,191,103);
+	border-style: solid;
    	border-width: 2px;
 
 	 -moz-border-radius:  3px;  
    	-webkit-border-radius: 3px;  
-    border-radius: 3px;
+	border-radius: 3px;
 
 	color: #333;
 }
 
-#tags #library #newtag .button:hover {
+#newtag .button:hover {
 	cursor: pointer;
 }
 
-#tags #library #newtag .enabled {
+#newtag .enabled {
 	background-color: rgb(122,191,103);
 	border-color: rgb(122,191,103);
 }
 
-#tags #library #newtag .disabled {
+#newtag .disabled {
 	background-color: rgb(150,150,150);
 	border-color: rgb(150,150,150);
 }
 
-#tags #library #newtag .disabled:hover {
+#newtag .disabled:hover {
 	cursor: wait;
 }
 
 #tags #library ul {
-	width: 300px; 
+	width: 400px; 
 	margin: 0;
 	padding: 0;
 }
 
-
 #tags #library ul li {
 	list-style-type: none;
-	margin: 2px 5px 2px -25px;
+	margin: 2px 5px 2px -15px;
 	padding: 3px 3px 3px 35px;
 
 	color: #DDD;
-
-	
 }
 
 #tags #library ul li .parent{
@@ -164,7 +158,6 @@ border-color: rgb(122,191,103);
 	padding-left: 27px;
 	line-height: 27px;
 	font-size: 18px;
-	
 }
 
 #tags #library ul li .child{
@@ -201,21 +194,25 @@ border-color: rgb(122,191,103);
 }
 
 #tags #library .addtag {
-	margin-left: 10px;
 	padding: 3px;
-	background-color: rgb(122,191,103);
+	margin-left: 24px;
+	padding-left: 12px;
+	padding-right: 12px;
+	color: rgb(122,191,103);
 
-	 -moz-border-radius:  3px;  
+	-moz-border-radius:  3px;  
    	-webkit-border-radius: 3px;  
-    border-radius: 3px;
+	border-radius: 3px;
 
-	color: #333;
+	background-color: #333;
 
 	font-size: 12px;
 }
 
 #tags #library .addtag:hover {
 	cursor: pointer;
+	color: #333;
+	background-color: rgb(122,191,103);
 }
 
 /*
@@ -224,9 +221,10 @@ border-color: rgb(122,191,103);
 }
 */
 #tweet {
-	width:700px;
-	margin-left: auto;
-  	margin-right: auto;
+	position: absolute;
+	top:200px;
+	left: 400px;
+  	right: 0;
 }
 
 #tweet #nav {
@@ -381,6 +379,12 @@ border-color: rgb(122,191,103);
 
 #tweet #usedtags {
 	clear: both;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+	width: 500px;
+	color: #ccc;
+	margin-top: 80px;
 }
 
 #tweet #usedtags .item {

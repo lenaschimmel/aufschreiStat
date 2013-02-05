@@ -148,12 +148,12 @@ Aufschrei.Controller = (function(app) {
 		$('#library > #root').html('');
 		$.each(tags.result, function(index, value) {
 			if(!value.parent_id || value.parent_id == 0) {
-				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">add new tag</span></li>');
+				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">+</span></li>');
 				$('#library li[id='+value.id+'] > .label').addClass('child');
 				$('#library li[id='+value.id+'] > .label').tipTip();
 			} else {
 				var node = $('#library li[id='+value.parent_id+']');
-				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">add new tag</span></li>');
+				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">+</span></li>');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').addClass('child');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').tipTip();
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+']').addClass('hidden');
@@ -276,7 +276,7 @@ Aufschrei.Controller = (function(app) {
 		$('#spinner').fadeIn();
 		$('.lang').removeClass('used');
 		$('.label').removeClass('used');
-		$('#usedtags').html('');
+		$('#usedtags').html('Used Tags:<br/>');
 
 		$('#library li').addClass('closed');
 		$('#library li').not('[parent="0"]').addClass('hidden');
