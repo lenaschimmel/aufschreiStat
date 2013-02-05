@@ -158,6 +158,11 @@ header h2 {
 	padding-left: 27px;
 	line-height: 27px;
 	font-size: 18px;
+	font-weight: bold;
+}
+
+#tags #library ul li .parent:after {
+    content: "...";
 }
 
 #tags #library ul li .child{
@@ -166,7 +171,10 @@ header h2 {
 	padding-left: 27px;
 	line-height: 27px;
 	font-size: 16px;
-	description: ;
+}
+
+#tags #library ul li .child.used {
+	background: url(img/tag_open_blue.png) no-repeat left;
 }
 
 #tags #library ul li .used{
@@ -249,6 +257,8 @@ header h2 {
 
     font-size: 1em;
 	color: #333;
+
+    padding: 20px;
 }
 
 #tweet #nav .button:hover {
@@ -271,14 +281,16 @@ header h2 {
 	-khtml-border-radius: 8px;
 	border-radius: 8px;
 
-	padding: 10px;
+	padding: 40px;
 
 
 	color: #333;
 }
 
 #tweet #content #text {
-	margin-top: 5px;
+	margin-top: 25px;
+	font-size: 22px;
+	font-weight: bold;
 }
 
 #tweet #content #text a{
@@ -294,7 +306,14 @@ header h2 {
 #tweet #content #user_name {
 	margin-left: 3px;
 	font-size: 1em;
+	color: #999;
 }
+
+#tweet #content #time {
+	color: #999;
+}
+
+
 
 #tweet #content #user_image {
 	margin-top: 5px;
@@ -381,15 +400,19 @@ header h2 {
 	clear: both;
 	margin-left: auto;
 	margin-right: auto;
-	padding: 0;
+	padding: 15px;
 	width: 500px;
 	color: #ccc;
 	margin-top: 80px;
+	min-height: 60px;
+}
+
+#tweet #usedtags .heading {
+	margin-bottom: 15px;
 }
 
 #tweet #usedtags .item {
-	display: block;
-	float: left;
+	display: inline;
 
 	margin: 7px;
 

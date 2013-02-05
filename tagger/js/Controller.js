@@ -276,7 +276,7 @@ Aufschrei.Controller = (function(app) {
 		$('#spinner').fadeIn();
 		$('.lang').removeClass('used');
 		$('.label').removeClass('used');
-		$('#usedtags').html('Used Tags:<br/>');
+		$('#usedtags').html('Used Tags:<br/><br/>');
 
 		$('#library li').addClass('closed');
 		$('#library li').not('[parent="0"]').addClass('hidden');
