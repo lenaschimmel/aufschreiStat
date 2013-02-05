@@ -147,7 +147,7 @@ Aufschrei.Controller = (function(app) {
 	buildTagTree = function() {
 		$('#library > #root').html('');
 		$.each(tags.result, function(index, value) {
-			if(value.parent_id == 0) {
+			if(!value.parent_id || value.parent_id == 0) {
 				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">add new tag</span></li>');
 				$('#library li[id='+value.id+'] > .label').addClass('child');
 				$('#library li[id='+value.id+'] > .label').tipTip();
