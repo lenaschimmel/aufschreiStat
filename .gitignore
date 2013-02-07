@@ -5,5 +5,5 @@ nohup.out
 tagger/config.php
 
 .DS_Store
-
+*~
 tagger/config.php
