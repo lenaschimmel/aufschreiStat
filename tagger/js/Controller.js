@@ -162,6 +162,7 @@ Aufschrei.Controller = (function(app) {
 	buildTagTree = function() {
 		$('#library > #root').html('');
 		$.each(tags.result, function(index, value) {
+			all_tags[value.id] = value;
 			if(!value.parent_id || value.parent_id == 0) {
 				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">+</span></li>');
 				$('#library li[id='+value.id+'] > .label').addClass('child');
@@ -342,24 +343,17 @@ Aufschrei.Controller = (function(app) {
 
 	addTagToTweet = function(tag_id)
 	{
-		$.each(tags.result, function(index, value) {
-			if(value.id == tag_id) {
-				tag = value;
-			}
-		});
+		var tag = all_tags[tag_id];
+		var path = "<b>"+tag.label+"</b>";
+		while(tag.parent_id) {
+			tag = all_tags[tag.parent_id];
+			path = tag.label + " &gt; " + path;
+		}
+		path = path.split(' ').join('&nbsp;');
 
-		//if(isTagEnabled(tag_id))
-		//	return;
-
-		//$('#used_tags').fadeOut().html('').fadeIn();
-		//var tagObject = all_tags[tag_id];
-		//if(tagObject) {
-	    		used_tags.push(tag_id);	
-			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tag.label+'</span>');
-			$('.library_entry[id="'+tag_id+'"]').addClass('used').removeClass('unused');
-			//if(tagObject.parent_id)
-				//addTagToTweet(tagObject.parent_id);
-		//}
+    		used_tags.push(tag_id);
+		$('#usedtags').append(' <span class="item" id="'+tag_id+'">'+path+'</span>');
+		$('.library_entry[id="'+tag_id+'"]').addClass('used').removeClass('unused');
 	},
 
 	shownewTagDialog = function(parent_id) {
