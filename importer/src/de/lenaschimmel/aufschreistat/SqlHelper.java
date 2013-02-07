@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
@@ -26,6 +27,7 @@ public class SqlHelper {
 	private static PreparedStatement insertUserStmt;
 //	private static PreparedStatement getUserIdStmt;
 	private static PreparedStatement insertRetweetStmt;
+	private static PreparedStatement insertLabelStmt;
 
 	static void initDbParams() throws IOException {
 		Properties properties = new Properties();
@@ -54,6 +56,8 @@ public class SqlHelper {
 				insertRetweetStmt = con.prepareStatement("INSERT INTO statRetweets SET status_id = ?, user_id = ?, retweeted_at = ?;");
 				insertTweetStmt = con.prepareStatement("INSERT INTO statTweets SET id = ?, coordinates_lat = ?, coordinates_lon = ?, text = ?, retweet_count = ?, created_at = ?, in_reply_to_status_id = ?, user_id = ?;");
 				insertUserStmt = con.prepareStatement("INSERT INTO statUsers SET id = ?, screen_name = ?, name = ?, description = ?, lang = ?, followers_count = ?, statuses_count = ?, url = ?, profile_image_url = ?;");
+				insertLabelStmt = con.prepareStatement("INSERT INTO statLabel SET label = ?, parent_id = ?, reviewed = 1;", Statement.RETURN_GENERATED_KEYS);
+				
 				//getUserIdStmt =  con.prepareStatement("SELECT id FROM users WHERE screen_name = ?;");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -73,11 +77,17 @@ public class SqlHelper {
 			getConnection();
 		return insertUserStmt;
 	}
-	
+
 	public static PreparedStatement getInsertRetweetStmt() {
 		if(insertRetweetStmt == null)
 			getConnection();
 		return insertRetweetStmt;
+	}
+	
+	public static PreparedStatement getInsertLabelStmt() {
+		if(insertLabelStmt == null)
+			getConnection();
+		return insertLabelStmt;
 	}
 //
 //	public static PreparedStatement getGetUserIdStmt() {
@@ -147,6 +157,22 @@ public class SqlHelper {
 		} catch (MySQLIntegrityConstraintViolationException e) {
 			// ignore, this is just a duplicate tweet entry, that's rather normal
 		}
+	}
+	
+	public static Long insertLabel(Long parent_id, String name) throws SQLException {
+		try {
+			PreparedStatement insertLabelStmt = SqlHelper.getInsertLabelStmt();
+			insertLabelStmt.setString(1, name);
+			if(parent_id != null)
+				insertLabelStmt.setLong(2, parent_id);
+			insertRetweetStmt.executeUpdate();
+			ResultSet keys = insertLabelStmt.getGeneratedKeys();
+			keys.next();
+			return keys.getLong(1);
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			// ignore, this is just a duplicate tweet entry, that's rather normal
+		}
+		return null;
 	}
 
 	public static void insertDummyTweet(long id, String message) throws SQLException {

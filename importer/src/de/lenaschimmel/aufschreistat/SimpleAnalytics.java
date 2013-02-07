@@ -34,8 +34,9 @@ public class SimpleAnalytics {
 	}
 
 	private static void printKeywordTable() throws ParseException, SQLException {
-		String[] columns = { "", "männer", "frauen", "sexismus", "brüderle",
-				"thema" };
+		String[] columns = { "", "aufschrei", "gegenschrei", "sexismus", "lanz",
+				"jauch", "annewill", "login", "zdflogin", "brüderle", "ebeling", "pütz", "sass", "bruhns" };
+		//String[] columns = { "jauch", "#jauch" };
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
@@ -45,7 +46,9 @@ public class SimpleAnalytics {
 		System.out.println();
 
 		long start = sdf.parse("25.01.2013 00:00").getTime();
-		long end = sdf.parse("31.01.2013 8:00").getTime();
+		long end =   sdf.parse("06.02.2013 00:00").getTime();
+		//long start = sdf.parse("06.02.2013 00:00").getTime();
+		//long end =   sdf.parse("06.02.2013 04:00").getTime();
 		long interval = 1000 * 60 * 60;
 		for (long intervalStart = start; intervalStart < end; intervalStart += interval) {
 			long intervalEnd = intervalStart + interval;
