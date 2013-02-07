@@ -14,6 +14,7 @@ Aufschrei.Controller = (function(app) {
 		initMemebers();
 		getRandomTweetFromDatabase();
 		getTagsFromDatabase();
+		getStatistic();
 	},
 
 	initUI = function() {
@@ -72,6 +73,15 @@ Aufschrei.Controller = (function(app) {
 		});
 	},
 
+	getStatistic = function() {
+		$.ajax({
+  				type: "POST",
+  				url: api_url,
+  				data: {query: "statistic"},
+  				success: showStatistic
+		});
+	},
+
 	getTagsFromDatabase = function() {
 		$.ajax({
   				type: "POST",
@@ -127,6 +137,11 @@ Aufschrei.Controller = (function(app) {
   				data: {query: "url", url: 'https://twitter.com/'+$.parseJSON(tweet).result[0].user+'/status/'+$.parseJSON(tweet).result[0].id},
   				success: showTweet
 		});
+	},
+
+	showStatistic = function(tags_json) {
+		var obj = $.parseJSON(tags_json);
+		$('#statisticWrapper').html(obj.result);
 	},
 
 	showTags = function(tags_json) {

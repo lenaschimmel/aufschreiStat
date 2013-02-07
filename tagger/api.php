@@ -1,10 +1,14 @@
 <?php
-
+session_start();
+ini_set("display_errors", 1);
+error_reporting(E_ALL);
 require_once("config.php");
 
 mysql_connect( $config["mysqlhost"].":".$config["mysqlport"], $config["mysqluser"], $config["mysqlpassword"]);
 mysql_set_charset($config["mysqlcharset"]);
 mysql_select_db($config["mysqldatabase"]);
+
+setupSession();
 
 if(isset($_POST['query'])) {
 		$query = $_POST['query'];
@@ -14,6 +18,24 @@ if(isset($_POST['query'])) {
 		parseQuery($query);
 } else {
 		returnError("NO QUERY");
+}
+
+function setupSession() {
+	if(!isset($_SESSION['session_id']))
+	{
+		$session_id = rand();
+		$_SESSION['session_id'] = $session_id;
+		$sql = mysql_query("INSERT INTO statTaggers SET session_id='$session_id';");
+		mysql_query($sql);
+		$tagger_id = mysql_insert_id();
+		$_SESSION['tagger_id'] = $tagger_id;
+	}
+	else
+	{
+		$session_id = $_SESSION['session_id'];
+		$tagger_id = getSingleValueFromDb("SELECT id FROM statTaggers WHERE session_id='$session_id';");
+		$_SESSION['tagger_id'] = $tagger_id;
+	}
 }
 
 function parseQuery($query) {
@@ -31,11 +53,27 @@ function parseQuery($query) {
 		updatetag();
 	} else if($query == "updatelang" && isset($_POST['lang']) && isset($_POST['tweet'])){
 		updatelang();
+	} else if($query == "statistic") {
+		statistic();
 	} else {
 		returnError("UNKNOWN QUERY");
 	}
 }
 
+function statistic() {
+	$orig = getSingleValueFromDb("SELECT COUNT(*) FROM `statTweets`");
+	$rt = getSingleValueFromDb("SELECT COUNT(*) FROM `statRetweets`");
+	$sum = $orig + $rt;
+	$aufschrei = getSingleValueFromDb("SELECT COUNT(*) FROM `statTweets` WHERE text LIKE '%#aufschrei%'");
+	$tagger_id = $_SESSION['tagger_id'];
+	returnSingleValue("<ul><li>Original-Tweets: $orig</li><li>Retweets: $rt</li><li>Gesamt-Tweets: $sum</li><li>#aufschrei: $aufschrei</li><li>Deine Nutzer-ID: $tagger_id</li></ul>");
+}
+
+function getSingleValueFromDb($query) {
+	$sql = mysql_query($query);
+	$row = mysql_fetch_row($sql);
+	return $row[0];
+}
 
 function getRandomTweet() {
 	$sql = mysql_query("SELECT id AS id, user_id AS user FROM statTweets ORDER BY RAND() LIMIT 1");

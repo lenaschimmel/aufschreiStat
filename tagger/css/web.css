@@ -7,8 +7,8 @@ body {
 
 header {
 	top: 20px;
-	left: 400px;
-  	right: 0;
+	left: 440px;
+  	right: 280px;
 	position: absolute;
   	text-align: center;
 }
@@ -22,8 +22,17 @@ header h2 {
 	color: #DDD;
 }
 
-#tags h1 {
+.sidebar, .sidebar a, .sidebar a:hover, .sidebar a:visited {
 	color: #DDD;
+}
+
+#help {
+    margin-left: auto;
+    margin-right: auto;
+    width: 550px;
+    color: #DDD;
+    font-size: 18px;
+    margin-top: 150px;
 }
 
 #tags {
@@ -33,6 +42,15 @@ header h2 {
 	bottom: 0;
 	width: 400px;
 }
+
+#rightbar {
+	position: fixed;
+	right: 40px;
+	bottom: 0;
+	width: 250px;
+	top: 0;
+}
+
 
 #tags #library {
 	width: 100%;
@@ -232,7 +250,7 @@ header h2 {
 	position: absolute;
 	top:200px;
 	left: 400px;
-  	right: 0;
+  	right: 250px;
 }
 
 #tweet #nav {
@@ -444,4 +462,8 @@ header h2 {
 
 .addButton:hover {
     border: 2px solid red;
+}
+
+#tiptip_content {
+    font-size: 14px !important;
 }
