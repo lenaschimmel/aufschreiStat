@@ -96,7 +96,7 @@ function getRandomTweet() {
 }
 
 function getTags() {
-	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels WHERE reviewed = 1 ORDER BY parent_id, label ASC");
+	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels" . /*WHERE reviewed = 1*/ " ORDER BY parent_id, label ASC");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
 	    //$encodedResult = array_map(utf8_encode, $result);
@@ -132,14 +132,14 @@ function updatetag() {
 	$id = mysql_real_escape_string($_POST['id']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
 	$tagger_id = $_SESSION['tagger_id'];
-	$update_label = mysql_query("INSERT INTO statTweets_to_labels SET label_id='$id', tweet_id='$tweet', tagger_id='$tagger_id';");
+	$update_label = mysql_query("INSERT INTO statTweetsToLabels SET label_id='$id', tweet_id='$tweet', tagger_id='$tagger_id';");
 }
 
 function updatelang() {
 	$lang = mysql_real_escape_string($_POST['lang']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
 	$tagger_id = $_SESSION['tagger_id'];
-	$update_lang = mysql_query("INSERT INTO statTweets_to_langs SET lang='$lang', tweet_id='$tweet', tagger_id='$tagger_id';");
+	$update_lang = mysql_query("INSERT INTO statTweetsToLangs SET lang='$lang', tweet_id='$tweet', tagger_id='$tagger_id';");
 }
 
 function returnArray($result) {
