@@ -162,6 +162,12 @@ Aufschrei.Controller = (function(app) {
 	buildTagTree = function() {
 		$('#library > #root').html('');
 		$.each(tags.result, function(index, value) {
+			insertTagIntoTree(value);
+		});
+	},
+
+	insertTagIntoTree = function(value) {
+			all_tags[value.id] = value;
 			if(!value.parent_id || value.parent_id == 0) {
 				$('#library > #root').append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">+</span></li>');
 				$('#library li[id='+value.id+'] > .label').addClass('child');
@@ -171,9 +177,10 @@ Aufschrei.Controller = (function(app) {
 				$(node).append('<li id='+value.id+' parent='+value.parent_id+' class="closed" description='+value.description+'><span class="label" id='+value.id+' title="'+value.description+'">'+value.label+'</span><span class="addtag" parent="'+value.parent_id+'" id="'+value.id+'">+</span></li>');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').addClass('child');
 				$('#library li[id='+value.parent_id+'] > li[id='+value.id+'] > .label').tipTip();
-				$('#library li[id='+value.parent_id+'] > li[id='+value.id+']').addClass('hidden');
-				$('#library li[id='+value.parent_id+'] > .label').removeClass('child');	
-				$('#library li[id='+value.parent_id+'] > .label').addClass('parent');	
+				if($('#library li[id='+value.parent_id+']').hasClass('closed'))
+					$('#library li[id='+value.parent_id+'] > li[id='+value.id+']').addClass('hidden');
+				$('#library li[id='+value.parent_id+'] > .label').removeClass('child');
+				$('#library li[id='+value.parent_id+'] > .label').addClass('parent');
 				$('#library li[id='+value.parent_id+'] > .label').attr('title', 'Click to open/close tag category');
 				$('#library li[id='+value.parent_id+'] > .label').tipTip();
 			}
@@ -189,13 +196,12 @@ Aufschrei.Controller = (function(app) {
 					node.children('li').toggleClass('hidden');
 				} else {
 					if(working) return;
-					$(e.target).toggleClass('used');
+					//$(e.target).toggleClass('used');
 					addOrRemoveTagToTweet($(e.target).attr("id"));
 				}
 
 			});
-		});
-	}
+	},
 
 	createTag = function(tag) {
 		var parentElement;
@@ -243,7 +249,10 @@ Aufschrei.Controller = (function(app) {
 		var obj = $.parseJSON(json);
 		if(obj.status == "ok") {
 			tags.result.push(obj.result);
-			console.log(tags)
+			insertTagIntoTree(obj.result);
+			console.log(obj.result);
+			all_tags[obj.result.id] = obj.result;
+//			console.log(tags)
 			addOrRemoveTagToTweet(obj.result.id);
 			$('#newtag').attr('parent_id', '');
 			$('#newtag > #breadcrumbs').html('');
@@ -253,7 +262,7 @@ Aufschrei.Controller = (function(app) {
 			$('#newtag > #breadcrumbs').html('');
 			$('#newtag').fadeOut();
 		}
-		buildTagTree();
+		//buildTagTree();
 	},
 
 	createTagFromServer = function(json) {
@@ -320,6 +329,10 @@ Aufschrei.Controller = (function(app) {
 		$('#user_name').html(username.replace('@',''));
 		$('#text').html(text);
 		$('#time').html(time);
+
+		// Don't know where else to put it:
+
+		getStatistic();
 	},
 
 	isTagEnabled = function(tag_id) {
@@ -342,24 +355,17 @@ Aufschrei.Controller = (function(app) {
 
 	addTagToTweet = function(tag_id)
 	{
-		$.each(tags.result, function(index, value) {
-			if(value.id == tag_id) {
-				tag = value;
-			}
-		});
+		var tag = all_tags[tag_id];
+		var path = "<b>"+tag.label+"</b>";
+		while(tag.parent_id) {
+			tag = all_tags[tag.parent_id];
+			path = tag.label + " &gt; " + path;
+		}
+		path = path.split(' ').join('&nbsp;');
 
-		//if(isTagEnabled(tag_id))
-		//	return;
-
-		//$('#used_tags').fadeOut().html('').fadeIn();
-		//var tagObject = all_tags[tag_id];
-		//if(tagObject) {
-	    		used_tags.push(tag_id);	
-			$('#usedtags').append('<span class="item" id="'+tag_id+'"">'+tag.label+'</span>');
-			$('.library_entry[id="'+tag_id+'"]').addClass('used').removeClass('unused');
-			//if(tagObject.parent_id)
-				//addTagToTweet(tagObject.parent_id);
-		//}
+    		used_tags.push(tag_id);
+		$('#usedtags').append(' <span class="item" id="'+tag_id+'">'+path+'</span>');
+		$('li span[id="'+tag_id+'"]').addClass('used').removeClass('unused');
 	},
 
 	shownewTagDialog = function(parent_id) {
@@ -388,7 +394,7 @@ Aufschrei.Controller = (function(app) {
 			   return value != tag_id;
 			});
 			$('.item[id="'+tag_id+'"]').fadeOut().remove();
-			$('.library_entry[id="'+tag_id+'"]').removeClass('used').addClass('unused');
+			$('li span[id="'+tag_id+'"]').removeClass('used').addClass('unused');
 
 			
 		//}

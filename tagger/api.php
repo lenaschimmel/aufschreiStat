@@ -65,8 +65,19 @@ function statistic() {
 	$rt = getSingleValueFromDb("SELECT COUNT(*) FROM `statRetweets`");
 	$sum = $orig + $rt;
 	$aufschrei = getSingleValueFromDb("SELECT COUNT(*) FROM `statTweets` WHERE text LIKE '%#aufschrei%'");
+	$tagged_tweets = getSingleValueFromDb("SELECT COUNT(DISTINCT `tweet_id`) FROM `statTweetsToLabels`");
+	$tagged_taggers = getSingleValueFromDb("SELECT COUNT(DISTINCT `tagger_id`) FROM `statTweetsToLabels`");
+	$tagged_tags = getSingleValueFromDb("SELECT COUNT(*) FROM `statTweetsToLabels`");
+
 	$tagger_id = $_SESSION['tagger_id'];
-	returnSingleValue("<ul><li>Original-Tweets: $orig</li><li>Retweets: $rt</li><li>Gesamt-Tweets: $sum</li><li>#aufschrei: $aufschrei</li><li>Deine Nutzer-ID: $tagger_id</li></ul>");
+	returnSingleValue("<ul><li>Original-Tweets: $orig</li>".
+			    "<li>Retweets: $rt</li>".
+			    "<li>Gesamt-Tweets: $sum</li>".
+			    "<li>#aufschrei: $aufschrei</li>".
+			    "<li>Getaggte Tweets: $tagged_tweets</li>".
+			    "<li>Aktive Nutzer: $tagged_taggers</li>".
+			    "<li>Zugewiesene Tags: $tagged_tags</li>".
+			    "<li>Deine Nutzer-ID: $tagger_id</li></ul>");
 }
 
 function getSingleValueFromDb($query) {
@@ -85,7 +96,7 @@ function getRandomTweet() {
 }
 
 function getTags() {
-	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels WHERE reviewed = 1 ORDER BY parent_id, label ASC");
+	$sql = mysql_query("SELECT id AS id, label AS label, description as description, parent_id FROM statLabels" . /*WHERE reviewed = 1*/ " ORDER BY parent_id, label ASC");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
 	    //$encodedResult = array_map(utf8_encode, $result);
@@ -120,13 +131,15 @@ function updatetweet() {
 function updatetag() {
 	$id = mysql_real_escape_string($_POST['id']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_label = mysql_query("INSERT INTO statTweets_to_labels SET label_id='$id', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
+	$tagger_id = $_SESSION['tagger_id'];
+	$update_label = mysql_query("INSERT INTO statTweetsToLabels SET label_id='$id', tweet_id='$tweet', tagger_id='$tagger_id';");
 }
 
 function updatelang() {
 	$lang = mysql_real_escape_string($_POST['lang']);
 	$tweet =  mysql_real_escape_string($_POST['tweet']);
-	$update_lang = mysql_query("INSERT INTO statTweets_to_langs SET lang='$lang', tweet_id='$tweet', count=1 ON DUPLICATE KEY UPDATE count=count+1");
+	$tagger_id = $_SESSION['tagger_id'];
+	$update_lang = mysql_query("INSERT INTO statTweetsToLangs SET lang='$lang', tweet_id='$tweet', tagger_id='$tagger_id';");
 }
 
 function returnArray($result) {
