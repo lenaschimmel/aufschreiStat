@@ -43,9 +43,9 @@ public class PastImporter {
 			System.exit(1);
 		}
 
-		importMissingPrecedingTweets();
+		//importMissingPrecedingTweets();
 
-		//importPastTweets();
+		importPastTweets();
 	}
 
 	private static void importMissingPrecedingTweets() throws SQLException,
@@ -100,8 +100,10 @@ public class PastImporter {
 
 		while (true) {
 			try {
-				Query query = new Query("#aufschrei");
+				Query query = new Query("#aufschrei OR Sexismus OR #jauch OR #lanz OR #annewill OR #will OR #login OR #zdflogin OR #gegenschei");
+//				Query query = new Query("#illner #maybritillner");
 				query.setMaxId(minId);
+				query.setLang("de");
 				query.setCount(100);
 
 				QueryResult result = twitter.search(query);

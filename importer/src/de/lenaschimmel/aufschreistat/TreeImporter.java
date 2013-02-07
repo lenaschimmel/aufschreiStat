@@ -22,9 +22,13 @@ public class TreeImporter {
 		Long parent[] = new Long[10];
 		while(line != null)
 		{
-			int indent = getIndent(line);
-			System.out.println(indent + ": " + line.trim());
-			//parent[indent + 1] = SqlHelper.insertLabel(parent[indent], line.trim());
+			if(line.trim().length() > 0)
+			{
+				int indent = getIndent(line);
+				long newId = SqlHelper.insertLabel(parent[indent], line.trim());
+				System.out.println(indent + ".   " + newId + " = " + line.trim() + ", parent = " + parent[indent]);
+				parent[indent + 1] = newId;
+			}
 			line = br.readLine();
 		}
 	}
@@ -34,6 +38,8 @@ public class TreeImporter {
 		for(char c : line.toCharArray())
 			if(c == ' ')
 				count++;
+			else
+				break;
 		return count / 4;
 	}
 

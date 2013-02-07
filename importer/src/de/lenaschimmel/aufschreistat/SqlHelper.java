@@ -56,7 +56,7 @@ public class SqlHelper {
 				insertRetweetStmt = con.prepareStatement("INSERT INTO statRetweets SET status_id = ?, user_id = ?, retweeted_at = ?;");
 				insertTweetStmt = con.prepareStatement("INSERT INTO statTweets SET id = ?, coordinates_lat = ?, coordinates_lon = ?, text = ?, retweet_count = ?, created_at = ?, in_reply_to_status_id = ?, user_id = ?;");
 				insertUserStmt = con.prepareStatement("INSERT INTO statUsers SET id = ?, screen_name = ?, name = ?, description = ?, lang = ?, followers_count = ?, statuses_count = ?, url = ?, profile_image_url = ?;");
-				insertLabelStmt = con.prepareStatement("INSERT INTO statLabel SET label = ?, parent_id = ?, reviewed = 1;", Statement.RETURN_GENERATED_KEYS);
+				insertLabelStmt = con.prepareStatement("INSERT INTO statLabels SET label = ?, parent_id = ?, reviewed = 1, description = '(Basis-Tag, siehe Hilfe)';", Statement.RETURN_GENERATED_KEYS);
 				
 				//getUserIdStmt =  con.prepareStatement("SELECT id FROM users WHERE screen_name = ?;");
 			} catch (Exception e) {
@@ -161,11 +161,14 @@ public class SqlHelper {
 	
 	public static Long insertLabel(Long parent_id, String name) throws SQLException {
 		try {
+			//System.out.println("Insert: " + name + ", " + parent_id);
 			PreparedStatement insertLabelStmt = SqlHelper.getInsertLabelStmt();
 			insertLabelStmt.setString(1, name);
 			if(parent_id != null)
 				insertLabelStmt.setLong(2, parent_id);
-			insertRetweetStmt.executeUpdate();
+			else
+				insertLabelStmt.setNull(2, java.sql.Types.BIGINT);
+			insertLabelStmt.executeUpdate();
 			ResultSet keys = insertLabelStmt.getGeneratedKeys();
 			keys.next();
 			return keys.getLong(1);

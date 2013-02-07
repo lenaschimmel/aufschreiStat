@@ -70,7 +70,7 @@ public class Main {
 		StatusListener listener = new PrintingStatusListener();
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 
-		String[] hashtags = { "#aufschrei" };
+		String[] hashtags = { "#aufschrei", "Sexismus", "#gegenschei", "#importertesthashtag"};
 
 		FilterQuery query = new FilterQuery(0, null, hashtags);
 
