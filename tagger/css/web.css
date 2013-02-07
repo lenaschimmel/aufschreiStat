@@ -26,6 +26,15 @@ header h2 {
 	color: #DDD;
 }
 
+#help {
+    margin-left: auto;
+    margin-right: auto;
+    width: 550px;
+    color: #DDD;
+    font-size: 18px;
+    margin-top: 150px;
+}
+
 #tags {
 	position: absolute;
 	top: 0;
@@ -35,11 +44,11 @@ header h2 {
 }
 
 #rightbar {
-	position: absolute;
-	top: 0;
+	position: fixed;
 	right: 40px;
 	bottom: 0;
 	width: 250px;
+	top: 0;
 }
 
 
