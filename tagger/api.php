@@ -94,11 +94,10 @@ function getTweet($where)
 {
 	// This query is build according http://jan.kneschke.de/projects/mysql/order-by-rand/
 
-	$columns = "id, user_id AS user, text, created_at, in_reply_to_status_id, retweet_count";
-	$query = "SELECT $columns FROM statTweets AS r1 JOIN (SELECT CEIL(RAND() * (SELECT MAX(internal_id) FROM statTweets)) AS internal_id) AS r2 WHERE r1.internal_id >= r2.internal_id AND $where ORDER BY r1.internal_id ASC LIMIT 1;";
+	$columns = "r1.id, user_id, text, created_at, in_reply_to_status_id, retweet_count, name, screen_name, description, profile_image_url, url";
+	$query = "SELECT $columns FROM statTweets AS r1, statUsers JOIN (SELECT CEIL(RAND() * (SELECT MAX(internal_id) FROM statTweets)) AS internal_id) AS r2 WHERE r1.internal_id >= r2.internal_id AND $where AND statUsers.id = r1.user_id ORDER BY r1.internal_id ASC LIMIT 1;";
 
 	$sql = mysql_query($query);
-	//$sql = mysql_query("SELECT id AS id, user_id AS user, text, created_at, in_reply_to_status_id, retweet_count FROM statTweets $where ORDER BY RAND() LIMIT 1");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
     	    $return[] = $result;

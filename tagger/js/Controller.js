@@ -69,8 +69,20 @@ Aufschrei.Controller = (function(app) {
   				type: "POST",
   				url: api_url,
   				data: {query: "random"},
-  				success: getTweetFromTwitter
+  				success: displayTweetFromDb
 		});
+	},
+
+	displayTweetFromDb = function(tweet) {
+	    var tweet_text = $.parseJSON(tweet).result[0].text;
+	    var user_screenname = $.parseJSON(tweet).result[0].screen_name;
+	    var time = $.parseJSON(tweet).result[0].created_at;
+	    var img_url = $.parseJSON(tweet).result[0].profile_image_url;
+	    var userhandle = $.parseJSON(tweet).result[0].name;
+	    var description = $.parseJSON(tweet).result[0].description;
+	    var link = $.parseJSON(tweet).result[0].url;
+	    displayTweet(tweet_text, user_screenname, time, img_url, userhandle, description, link);
+	    working = false;
 	},
 
 	getStatistic = function() {
@@ -324,11 +336,15 @@ Aufschrei.Controller = (function(app) {
 		}
 	},
 
-	displayTweet = function(text, username, time) {
+	displayTweet = function(text, username, time, img_url, userhandle, description, link) {
 		$('#spinner').hide();
-		$('#user_name').html(username.replace('@',''));
+		$('#user_name').html("@"+username).attr("href","https://twitter.com/"+username.replace('@',''));
 		$('#text').html(text);
 		$('#time').html(time);
+		$('#user_img').attr("src", img_url);
+		$('#user_handle').html(userhandle);
+		$('#user_description').html(description);
+		$('#user_link').html(link).attr("href",link);
 
 		// Don't know where else to put it:
 
