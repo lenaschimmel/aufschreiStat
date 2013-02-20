@@ -87,7 +87,18 @@ function getSingleValueFromDb($query) {
 }
 
 function getRandomTweet() {
-	$sql = mysql_query("SELECT id AS id, user_id AS user FROM statTweets ORDER BY RAND() LIMIT 1");
+	return getTweet("1");
+}
+
+function getTweet($where)
+{
+	// This query is build according http://jan.kneschke.de/projects/mysql/order-by-rand/
+
+	$columns = "id, user_id AS user, text, created_at, in_reply_to_status_id, retweet_count";
+	$query = "SELECT $columns FROM statTweets AS r1 JOIN (SELECT CEIL(RAND() * (SELECT MAX(internal_id) FROM statTweets)) AS internal_id) AS r2 WHERE r1.internal_id >= r2.internal_id AND $where ORDER BY r1.internal_id ASC LIMIT 1;";
+
+	$sql = mysql_query($query);
+	//$sql = mysql_query("SELECT id AS id, user_id AS user, text, created_at, in_reply_to_status_id, retweet_count FROM statTweets $where ORDER BY RAND() LIMIT 1");
 	$return = array();
 	while($result = mysql_fetch_assoc($sql)) {
     	    $return[] = $result;

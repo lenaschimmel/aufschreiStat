@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `statRetweets` (
 
 CREATE TABLE IF NOT EXISTS `statTweets` (
   `id` bigint(20) NOT NULL,
+  `internal_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `coordinates_lat` float NOT NULL,
   `coordinates_lon` float NOT NULL,
   `text` varchar(240) NOT NULL,
@@ -58,8 +59,9 @@ CREATE TABLE IF NOT EXISTS `statTweets` (
   `in_reply_to_status_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `tagged` int(11) NOT NULL DEFAULT '0' COMMENT 'Wie oft wurde dies getaggt?',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`internal_id`),
   KEY `coordinates_lat` (`coordinates_lat`,`coordinates_lon`,`created_at`,`in_reply_to_status_id`,`user_id`),
+  KEY `id` (`id`),
   FULLTEXT KEY `text` (`text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
